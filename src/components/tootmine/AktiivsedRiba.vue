@@ -19,7 +19,7 @@
                 :value="aktiivsed"
                 show-value
                 :min="0"
-                :max="130"
+                :max="kokku"
                 size="50px"
                 :thickness="0.1"
                 font-size="0.5em"
@@ -38,7 +38,7 @@
               :value="mitteaktiivsed"
               show-value
               :min="0"
-              :max="120"
+              :max="kokku"
               size="50px"
               :thickness="0.1"
               font-size="0.5em"
@@ -61,13 +61,12 @@ const props = defineProps<{
   aktiivsed: number;
   mitteaktiivsed: number;
 }>();
-// Sätime paika emit-si
+// Sätime paika emit-si (tagasi funktsioon)
 const emit = defineEmits(['mitteakt', 'aktiiv']);
-
+const kokku = computed(() => props.aktiivsed + props.mitteaktiivsed);
 const aktiivsed = computed(() => props.aktiivsed);
 const mitteaktiivsed = computed(() => props.mitteaktiivsed);
 // const mitteaktiivsed = ref(props.mitteaktiivsed);
-
 // Kui vajutame mitte aktiivsete peale:
 function vajutasMitteAkt() {
   emit('mitteakt');

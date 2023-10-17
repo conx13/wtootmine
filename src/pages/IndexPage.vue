@@ -1,18 +1,21 @@
 <template>
   <q-page style="padding-top: 120px">
-    <tootmine-component
-      title="Pärnu tootmine"
-      active
-      :todos="todos"
-      :meta="meta"
-    ></tootmine-component>
-    <!--Kuna kasutame Sticky, siis peab olema kõige lõpus-->
-    <aktiivsed-riba
-      @aktiiv="aktiiv"
-      @mitteakt="mitteakt"
-      :aktiivsed="aktiivsed"
-      :mitteaktiivsed="mitteaktiivsed"
-    />
+    <q-pull-to-refresh @refresh="refresh">
+      <tootmine-component
+        title="Pärnu tootmine"
+        active
+        :todos="todos"
+        :meta="meta"
+      ></tootmine-component>
+      <!--Kuna kasutame Sticky, siis peab olema kõige lõpus-->
+      <aktiivsed-riba
+        @aktiiv="aktiiv"
+        @mitteakt="mitteakt"
+        :aktiivsed="aktiivsed"
+        :mitteaktiivsed="mitteaktiivsed"
+      />
+      <p>{{ revresh }}</p>
+    </q-pull-to-refresh>
   </q-page>
 </template>
 
@@ -49,6 +52,16 @@ function aktiiv() {
   router.push({ name: 'tootajadPage' });
   return;
 }
+const revresh = ref(0);
+function refresh(done: () => void) {
+  setTimeout(() => {
+    revresh.value += 1;
+    done();
+  }, 1000);
+
+  console.log(revresh, 'REFRESH...');
+}
+
 const todos = ref<Todo[]>([
   {
     id: 1,

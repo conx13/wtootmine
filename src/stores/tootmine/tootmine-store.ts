@@ -20,7 +20,7 @@ export const useTootmineStore = defineStore('tootmine', {
       console.log('getPuudujad');
       await axios.get('api/rkood/tanapoletool/1').then((data) => {
         this.puudujad = data.data[0]['tulem'];
-        console.log(this.puudujad, 'Vastus data');
+        console.log(this.puudujad, 'Vastus data puudujad');
       });
     },
     async getAktiivsed() {
@@ -29,11 +29,11 @@ export const useTootmineStore = defineStore('tootmine', {
         console.log(data.data[0]['tulem'], 'Vastus data');
         if (data == null) {
           //this.aktiivsed = data.data[0]['tulem'];
-          console.log(this.aktiivsed, 'Vastus data');
+          console.log(this.aktiivsed, 'Vastus null aktiivsed');
           this.aktiivsed = 0;
         } else {
           this.aktiivsed = data.data[0]['tulem'];
-          console.log(0, 'Vastus data');
+          console.log(this.aktiivsed, 'Vastus data null');
         }
       });
     },

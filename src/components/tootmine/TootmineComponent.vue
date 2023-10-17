@@ -18,9 +18,9 @@
         </q-item>
       </div>
     </div>
-    <p>Count: {{ todoCount }} / {{ meta.totalCount }}</p>
-    <p>Active: {{ active ? 'yes' : 'no' }}</p>
-    <p>Clicks on todos: {{ clickCount }}</p>
+    <!--     <p>Count: {{ todoCount }} / {{ meta.totalCount }}</p>
+      <p>Active: {{ active ? 'yes' : 'no' }}</p>
+      <p>Clicks on todos: {{ clickCount }}</p> -->
   </div>
 </template>
 
@@ -29,6 +29,7 @@ import { computed, ref } from 'vue';
 import { Todo, Meta } from '../models';
 
 const clickCount = ref(0);
+
 function increment() {
   clickCount.value += 1;
 }
