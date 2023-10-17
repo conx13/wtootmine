@@ -55,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed } from 'vue';
 // Sätime paika prop-sid
 const props = defineProps<{
   aktiivsed: number;
@@ -64,8 +64,9 @@ const props = defineProps<{
 // Sätime paika emit-si
 const emit = defineEmits(['mitteakt', 'aktiiv']);
 
-const aktiivsed = ref(props.aktiivsed);
-const mitteaktiivsed = ref(props.mitteaktiivsed);
+const aktiivsed = computed(() => props.aktiivsed);
+const mitteaktiivsed = computed(() => props.mitteaktiivsed);
+// const mitteaktiivsed = ref(props.mitteaktiivsed);
 
 // Kui vajutame mitte aktiivsete peale:
 function vajutasMitteAkt() {
