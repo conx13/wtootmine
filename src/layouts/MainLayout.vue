@@ -1,5 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
+    <q-ajax-bar ref="bar" color="blue" size="5px" />
     <q-header v-if="onLogitud" bordered class="bg-white text-primary" reveal>
       <q-toolbar>
         <q-btn
@@ -16,7 +17,11 @@
         >
         <q-btn outline rounded no-caps padding="none">
           <div v-if="user" class="row items-center">
-            <q-avatar color="grey" text-color="white" class="q-ma-xs"
+            <q-avatar
+              size="30px"
+              color="grey"
+              text-color="white"
+              class="q-ma-xs"
               >{{ user.enimi?.charAt(0) }}{{ user.pnimi?.charAt(0) }}</q-avatar
             >
           </div>
@@ -26,6 +31,12 @@
                 <q-item-section>Logi välja</q-item-section>
                 <q-item-section avatar>
                   <q-icon name="exit_to_app"></q-icon>
+                </q-item-section>
+              </q-item>
+              <q-item clickable v-close-popup @click="logiValja">
+                <q-item-section>hillar.aas@matek.ee</q-item-section>
+                <q-item-section avatar>
+                  <q-icon name="user"></q-icon>
                 </q-item-section>
               </q-item>
             </q-list>

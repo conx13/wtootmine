@@ -13,7 +13,7 @@ export interface loginData {
   password: string;
 }
 
-export interface User {
+export interface Kasutaja {
   id: number;
   enimi: string;
   pnimi: string;
@@ -24,6 +24,17 @@ export interface User {
   markus?: string;
   pilt: string;
   todate?: string;
+}
+
+export interface User {
+  tid: number;
+  enimi: string;
+  pnimi: string;
+  nimi: string;
+  pilt?: string;
+  toogruppId: number;
+  toogruppNimi: string;
+  asukohtId: number;
 }
 
 export const enum messValik {

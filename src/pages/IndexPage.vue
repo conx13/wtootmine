@@ -11,8 +11,8 @@
       <aktiivsed-riba
         @aktiiv="aktiiv"
         @mitteakt="mitteakt"
-        :aktiivsed="aktiivsed"
-        :mitteaktiivsed="mitteaktiivsed"
+        :aktiivsed="aktiivsed.tulem"
+        :mitteaktiivsed="mitteaktiivsed.tulem"
       />
       <p>{{ revresh }}</p>
     </q-pull-to-refresh>
@@ -27,11 +27,8 @@ import { useTootmineStore } from '../stores/tootmine/tootmine-store';
 import TootmineComponent from 'components/tootmine/TootmineComponent.vue';
 import AktiivsedRiba from 'components/tootmine/AktiivsedRiba.vue';
 
-async function getPuudujad() {
-  await tootStore.getPuudujad();
-}
-async function getAktiivsed() {
-  await tootStore.getAktiivsed();
+async function getAktiivsedRibaData() {
+  await tootStore.getHetkelTool();
 }
 const router = useRouter();
 const tootStore = useTootmineStore();
@@ -40,8 +37,7 @@ const aktiivsed = computed(() => tootStore.aktiivsed);
 const mitteaktiivsed = computed(() => tootStore.puudujad);
 
 onMounted(() => {
-  getPuudujad();
-  getAktiivsed();
+  getAktiivsedRibaData();
 });
 
 function mitteakt() {
@@ -56,6 +52,7 @@ const revresh = ref(0);
 function refresh(done: () => void) {
   setTimeout(() => {
     revresh.value += 1;
+    getAktiivsedRibaData();
     done();
   }, 1000);
 

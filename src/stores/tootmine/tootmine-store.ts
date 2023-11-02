@@ -1,41 +1,50 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
 
+interface Tulem {
+  tulem: number;
+}
+
 export const useTootmineStore = defineStore('tootmine', {
-  state: () => {
-    return {
-      aktiivsed: 0,
-      puudujad: 0,
-    };
-  },
+  state: () => ({
+    aktiivsed: <Tulem>{ tulem: 0 },
+    puudujad: <Tulem>{ tulem: 0 },
+  }),
 
   getters: {
     tanaKokku(state) {
-      return state.aktiivsed + state.puudujad;
+      return state.aktiivsed.tulem + state.puudujad.tulem;
     },
   },
 
   actions: {
-    async getPuudujad() {
-      console.log('getPuudujad');
-      await axios.get('api/rkood/tanapoletool/1').then((data) => {
-        this.puudujad = data.data[0]['tulem'];
-        console.log(this.puudujad, 'Vastus data puudujad');
-      });
-    },
-    async getAktiivsed() {
-      console.log('getAktiivsed');
-      await axios.get('api/rkood/tanatool/1').then((data) => {
-        console.log(data.data[0]['tulem'], 'Vastus data');
-        if (data == null) {
-          //this.aktiivsed = data.data[0]['tulem'];
-          console.log(this.aktiivsed, 'Vastus null aktiivsed');
-          this.aktiivsed = 0;
-        } else {
-          this.aktiivsed = data.data[0]['tulem'];
-          console.log(this.aktiivsed, 'Vastus data null');
-        }
-      });
+    async getHetkelTool() {
+      this.aktiivsed = await getAktiivsed();
+      this.puudujad = await getPuudujad();
     },
   },
 });
+
+//Nokime kõik aktiivsed baasist
+function getAktiivsed() {
+  const data = axios.get<Tulem[]>('api/rkood/tanatool/1').then((res) => {
+    if (res.data.length) {
+      return res.data[0];
+    } else {
+      return { tulem: 0 };
+    }
+  });
+  return data;
+}
+
+//Nokime kõik puudujad baasist
+function getPuudujad() {
+  const data = axios.get<Tulem[]>('api/rkood/tanapoletool/1').then((res) => {
+    if (res.data.length) {
+      return res.data[0];
+    } else {
+      return { tulem: 0 };
+    }
+  });
+  return data;
+}
