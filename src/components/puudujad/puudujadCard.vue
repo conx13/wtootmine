@@ -1,6 +1,11 @@
 <template>
   <q-intersection transition="scale" once>
-    <q-card class="my-card bg-grey-1" flat bordered>
+    <q-card
+      class="my-card bg-grey-1"
+      flat
+      bordered
+      @click="tootajaInfo(user.tid)"
+    >
       <q-item>
         <q-item-section avatar>
           <q-avatar v-if="!user.pilt" size="xl" color="red" text-color="white">
@@ -23,6 +28,13 @@
 
 <script setup lang="ts">
 import { User } from '../models';
+import { useRouter } from 'vue-router';
 
 defineProps<{ user: User }>();
+const router = useRouter();
+
+function tootajaInfo(tid: number) {
+  router.push({ name: 'tootajaPage', params: { id: tid } });
+  return;
+}
 </script>

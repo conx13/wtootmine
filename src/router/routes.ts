@@ -9,6 +9,8 @@ import { useAuthStore } from 'src/stores/auth-store';
 import IndexPage from 'pages/IndexPage.vue';
 import PuudujadPage from 'pages/puudujad/puudujadPage.vue';
 import TootajadPage from 'pages/tootajad/tootajadPage.vue';
+import TootajaPage from 'pages/tootaja/tootajaPage.vue';
+
 import UserLogin from 'pages/UserLogin.vue';
 
 async function regAuth(
@@ -61,12 +63,16 @@ const routes: RouteRecordRaw[] = [
         //component: () => import('pages/puudujad/puudujadPage.vue'),
       },
       {
+        path: '/tootaja/:id',
+        name: 'tootajaPage',
+        component: TootajaPage,
+        meta: { title: 'Töötaja:' },
+      },
+      {
         path: '/login',
         name: 'userLogin',
         component: UserLogin,
         meta: { title: 'Login' },
-        // Soovitati väikese api puhul "otse laadiist mitte ette laadimist"
-        //component: () => import('pages/puudujad/puudujadPage.vue'),
       },
     ],
   },

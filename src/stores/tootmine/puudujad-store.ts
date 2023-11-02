@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import axios from 'axios';
 import { User } from 'src/components/models';
 
-export const usePuudujadStore = defineStore('counter', {
+export const usePuudujadStore = defineStore('puudujad', {
   state: () => ({
     puudujad: [] as User[],
     puudujaGrupid: [] as string[],

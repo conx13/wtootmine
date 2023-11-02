@@ -31,7 +31,7 @@ const valik: string[] = [];
 
 onMounted(() => {
   console.log('the component is now mounted.');
-  puudujadStore.setPuudujadFilter('');
+  //puudujadStore.setPuudujadFilter('');
   puudujadStore.getPuudujad();
 });
 

@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia';
-import { loginData, User } from '../components/models';
+import { loginData, Kasutaja } from '../components/models';
 import axios from 'axios';
 
 export const useAuthStore = defineStore('auth', {
   state: () => {
     return {
       loggedIn: true,
-      user: {} as User | null,
+      user: {} as Kasutaja | null,
     };
   },
   actions: {
@@ -47,7 +47,7 @@ export const useAuthStore = defineStore('auth', {
     },
 
     //Kui sisselogimine on ok
-    setLoggingIn(data: User) {
+    setLoggingIn(data: Kasutaja) {
       this.user = data;
       this.loggedIn = true;
     },
