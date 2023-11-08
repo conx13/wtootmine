@@ -20,12 +20,12 @@
                 show-value
                 :min="0"
                 :max="tanaKokku"
-                size="50px"
+                size="60px"
                 :thickness="0.1"
                 font-size="0.5em"
                 color="secondary"
                 track-color="grey-2"
-                class="q-ma-sm text-secondary text"
+                class="q-my-sm text-secondary text"
               />
             </div>
           </div>
@@ -39,12 +39,12 @@
               show-value
               :min="0"
               :max="tanaKokku"
-              size="50px"
+              size="60px"
               :thickness="0.1"
               font-size="0.5em"
               color="negative"
               track-color="grey-2"
-              class="q-ma-sm text-negative text"
+              class="q-my-sm text-negative text"
             />
           </div>
         </div>

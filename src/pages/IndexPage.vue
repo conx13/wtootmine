@@ -1,11 +1,17 @@
 <template>
-  <q-page style="padding-top: 120px">
-    <q-pull-to-refresh @refresh="refresh">
-      <tootmine-list />
-      <!--Kuna kasutame Sticky, siis peab olema kõige lõpus-->
-      <aktiivsed-riba @aktiiv="aktiiv" @mitteakt="mitteakt" />
-    </q-pull-to-refresh>
-  </q-page>
+  <div class="row-inline q-ma-xs">
+    <q-page style="padding-top: 120px">
+      <q-pull-to-refresh @refresh="refresh">
+        <div class="row">
+          <div class="col-xs-12 col-lg-3">
+            <tootmine-list />
+          </div>
+        </div>
+        <!--Kuna kasutame Sticky, siis peab olema kõige lõpus-->
+        <aktiivsed-riba @aktiiv="aktiiv" @mitteakt="mitteakt" />
+      </q-pull-to-refresh>
+    </q-page>
+  </div>
 </template>
 
 <script setup lang="ts">
