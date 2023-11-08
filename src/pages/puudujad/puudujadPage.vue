@@ -1,15 +1,17 @@
 <template>
   <q-page padding>
     <!-- content -->
-    <div class="row">
+    <div class="absolute-center" v-show="loading">
+      <q-spinner color="primary" size="3em" />
+    </div>
+    <div class="row" v-show="!loading">
       <div v-if="!puudujadFilter.length">Puudujaid ei olegi!</div>
       <div v-if="puudujadFilter.length" class="col-xs-12 col-lg-3">
         <puudujadGrupid />
-        <!-- <div>{{ puudujadFilter.length }}</div> -->
         <div
           class="row-inline q-ma-xs"
           v-for="item in puudujadFilter"
-          :key="item.tid"
+          :key="item.TID"
         >
           <puudujadCard :user="item" />
         </div>
@@ -26,12 +28,10 @@ import puudujadCard from '../../components/puudujad/puudujadCard.vue';
 import puudujadGrupid from '../../components/puudujad/puudujadGrupid.vue';
 
 const puudujadStore = usePuudujadStore();
-const { puudujadFilter } = storeToRefs(puudujadStore);
+const { puudujadFilter, loading } = storeToRefs(puudujadStore);
 const valik: string[] = [];
 
 onMounted(() => {
-  console.log('the component is now mounted.');
-  //puudujadStore.setPuudujadFilter('');
   puudujadStore.getPuudujad();
 });
 

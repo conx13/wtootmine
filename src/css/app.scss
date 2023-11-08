@@ -1,1 +1,19 @@
 // app global css in SCSS form
+@font-face {
+  font-family: gribakood;
+  src: url(./fonts/LibreBarcode39-Regular.ttf);
+}
+@font-face {
+  font-family: myribakood;
+  src: url(./fonts/Ribakood_uus.ttf);
+}
+
+// declare a class which applies it
+.gribakood {
+  font-family: 'gribakood';
+  font-size: 50px;
+}
+// declare a class which applies it
+.myribakood {
+  font-family: 'myribakood';
+}

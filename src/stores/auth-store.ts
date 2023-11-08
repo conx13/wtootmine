@@ -5,7 +5,7 @@ import axios from 'axios';
 export const useAuthStore = defineStore('auth', {
   state: () => {
     return {
-      loggedIn: true,
+      loggedIn: false,
       user: {} as Kasutaja | null,
     };
   },
@@ -19,14 +19,10 @@ export const useAuthStore = defineStore('auth', {
 
     //Logime sisse
     async login(login: loginData) {
-      console.log(login, 'LOGIN');
       await axios
         .post('/api/auth/login', login)
         .then((resp) => {
           this.setLoggingIn(resp.data.user);
-
-          /* this.user = resp.data.user;
-          this.loggedIn = true; */
         })
         .catch(() => this.logError());
     },

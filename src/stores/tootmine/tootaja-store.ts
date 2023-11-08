@@ -1,28 +1,40 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
-import { Kasutaja } from 'src/components/models';
+import { Tootaja } from 'src/components/models';
 
 export const useTootajaStore = defineStore('tootaja', {
   state: () => ({
-    tootaja: {} as Kasutaja,
+    tootaja: {} as Tootaja,
+    loading: false,
   }),
 
-  getters: {},
+  getters: {
+    tahed(state) {
+      if (state.tootaja !== undefined) {
+        return state.tootaja.PNIMI?.charAt(0) + state.tootaja.ENIMI?.charAt(0);
+      } else {
+        return '...';
+      }
+    },
+  },
 
   actions: {
     async getTootaja(tid: number) {
-      this.tootaja = await tootajaBaasist(tid);
+      this.loading = true;
+      const data = await tootajaBaasist(tid);
+      if (data !== undefined) {
+        this.tootaja = data;
+      }
+      this.loading = false;
     },
   },
 });
 
 async function tootajaBaasist(tid: number) {
-  let kasutaja!: Kasutaja;
-  await axios
-    .get<Kasutaja>(`/api/users/user/${tid}`)
-    .then((data) => {
-      test: data.data;
-    })
-    .catch((err) => console.log(err, 'Kasutaja error'));
-  return kasutaja;
+  try {
+    const data = await axios.get<Tootaja[]>(`/api/users/user/${tid}`);
+    return data.data[0];
+  } catch (err) {
+    console.log(err, 'Kasutaja error');
+  }
 }

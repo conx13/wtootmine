@@ -95,11 +95,11 @@ import { computed, ref } from 'vue';
 import { useAuthStore } from 'src/stores/auth-store';
 import MenuuLingid from 'components/MenuuLingid.vue';
 
-import { User } from '../components/models';
+import { Kasutaja } from '../components/models';
 
 const auth = useAuthStore();
 const onLogitud = computed(() => auth.loggedIn);
-const user = computed(() => <User>auth.user);
+const user = computed(() => <Kasutaja>auth.user);
 
 const linkideList = [
   {

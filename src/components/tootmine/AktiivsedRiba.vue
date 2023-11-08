@@ -16,10 +16,10 @@
             <div class="text-h6 text-right text-grey-9">Aktiivsed:</div>
             <div class="text-right">
               <q-circular-progress
-                :value="aktiivsed"
+                :value="aktiivsed.tulem"
                 show-value
                 :min="0"
-                :max="kokku"
+                :max="tanaKokku"
                 size="50px"
                 :thickness="0.1"
                 font-size="0.5em"
@@ -35,10 +35,10 @@
           <div @click="vajutasMitteAkt">
             <div class="text-h6 text-left text-grey-9">Mitteaktiivsed:</div>
             <q-circular-progress
-              :value="mitteaktiivsed"
+              :value="puudujad.tulem"
               show-value
               :min="0"
-              :max="kokku"
+              :max="tanaKokku"
               size="50px"
               :thickness="0.1"
               font-size="0.5em"
@@ -55,17 +55,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
-// Sätime paika prop-sid
-const props = defineProps<{
-  aktiivsed: number;
-  mitteaktiivsed: number;
-}>();
+import { storeToRefs } from 'pinia';
+import { useTootmineStore } from '../../stores/tootmine/tootmine-store';
+const tootStore = useTootmineStore();
+const { aktiivsed, puudujad, tanaKokku } = storeToRefs(tootStore);
+
 // Sätime paika emit-si (tagasi funktsioon)
 const emit = defineEmits(['mitteakt', 'aktiiv']);
-const kokku = computed(() => props.aktiivsed + props.mitteaktiivsed);
-const aktiivsed = computed(() => props.aktiivsed);
-const mitteaktiivsed = computed(() => props.mitteaktiivsed);
+
 // const mitteaktiivsed = ref(props.mitteaktiivsed);
 // Kui vajutame mitte aktiivsete peale:
 function vajutasMitteAkt() {

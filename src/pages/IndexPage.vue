@@ -1,20 +1,9 @@
 <template>
   <q-page style="padding-top: 120px">
     <q-pull-to-refresh @refresh="refresh">
-      <tootmine-component
-        title="Pärnu tootmine"
-        active
-        :todos="todos"
-        :meta="meta"
-      ></tootmine-component>
+      <tootmine-list />
       <!--Kuna kasutame Sticky, siis peab olema kõige lõpus-->
-      <aktiivsed-riba
-        @aktiiv="aktiiv"
-        @mitteakt="mitteakt"
-        :aktiivsed="aktiivsed.tulem"
-        :mitteaktiivsed="mitteaktiivsed.tulem"
-      />
-      <p>{{ revresh }}</p>
+      <aktiivsed-riba @aktiiv="aktiiv" @mitteakt="mitteakt" />
     </q-pull-to-refresh>
   </q-page>
 </template>
@@ -24,7 +13,7 @@ import { computed, onMounted, ref } from 'vue';
 import { Todo, Meta } from 'components/models';
 import { useRouter } from 'vue-router';
 import { useTootmineStore } from '../stores/tootmine/tootmine-store';
-import TootmineComponent from 'components/tootmine/TootmineComponent.vue';
+import TootmineList from '../components/tootmine/TootmineList.vue';
 import AktiivsedRiba from 'components/tootmine/AktiivsedRiba.vue';
 
 async function getAktiivsedRibaData() {
@@ -33,14 +22,12 @@ async function getAktiivsedRibaData() {
 const router = useRouter();
 const tootStore = useTootmineStore();
 
-const aktiivsed = computed(() => tootStore.aktiivsed);
-const mitteaktiivsed = computed(() => tootStore.puudujad);
-
 onMounted(() => {
   getAktiivsedRibaData();
 });
 
 function mitteakt() {
+  //puudujadStore.getPuudujad();
   router.push({ name: 'puudujadPage' });
   return;
 }
