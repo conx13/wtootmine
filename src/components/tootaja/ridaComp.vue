@@ -1,6 +1,6 @@
 <template>
   <div class="row q-py-xs items-center">
-    <div class="col-3 text-right q-mr-md" style="font-size: 1rem">
+    <div class="col-3 text-right q-mr-md text-grey-7" style="font-size: 1rem">
       {{ reaTekst }}:
     </div>
     <div class="col" style="font-size: 1.1rem">

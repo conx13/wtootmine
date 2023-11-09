@@ -6,7 +6,7 @@ import {
 import MainLayout from 'layouts/MainLayout.vue';
 import { useAuthStore } from 'src/stores/auth-store';
 
-import IndexPage from 'pages/IndexPage.vue';
+import TootminePage from 'pages/tootmine/TootminePage.vue';
 import PuudujadPage from 'pages/puudujad/puudujadPage.vue';
 import TootajadPage from 'pages/tootajad/tootajadPage.vue';
 import TootajaPage from 'pages/tootaja/tootajaPage.vue';
@@ -42,7 +42,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: '',
         name: 'tootminePage',
-        component: IndexPage,
+        component: TootminePage,
         meta: { title: 'tootmine' },
         beforeEnter: [regAuth],
       },
