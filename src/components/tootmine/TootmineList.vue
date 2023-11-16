@@ -1,6 +1,6 @@
 <template>
   <div class="row-inline q-ma-xs" v-for="item in tanaList" :key="item.JRK">
-    <q-card class="bg-grey-1" flat bordered>
+    <q-card class="bg-grey-1" flat bordered @click="gruppTootajad(item.GGRUPP)">
       <q-item>
         <q-item-section avatar class="">
           <q-circular-progress
@@ -37,8 +37,14 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
+import { useRouter } from 'vue-router';
 import { useTootmineStore } from '../../stores/tootmine/tootmine-store';
 
 const tootStore = useTootmineStore();
 const { aktiivsed, tanaList, tanaKokku } = storeToRefs(tootStore);
+const router = useRouter();
+
+function gruppTootajad(ggrupp: string) {
+  router.push({ name: 'tootmineGrupp', params: { grupp: ggrupp } });
+}
 </script>

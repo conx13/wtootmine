@@ -10,6 +10,8 @@ import TootminePage from 'pages/tootmine/TootminePage.vue';
 import PuudujadPage from 'pages/puudujad/puudujadPage.vue';
 import TootajadPage from 'pages/tootajad/tootajadPage.vue';
 import TootajaPage from 'pages/tootaja/tootajaPage.vue';
+import GruppTootajadPage from 'pages/tootmine/GruppTootajadPage.vue';
+import KasutajaPage from 'pages/kasutaja/KasutajaPage.vue';
 
 import UserLogin from 'pages/UserLogin.vue';
 
@@ -19,10 +21,7 @@ async function regAuth(
   next: NavigationGuardNext
 ) {
   const auth = useAuthStore();
-  let onLogitud = false;
-  onLogitud = await auth.authStatus();
-  console.log(onLogitud, 'OnLogitud');
-  if (onLogitud) {
+  if (await auth.authStatus()) {
     console.log('Kasutaja on logitud');
     next();
   } else {
@@ -51,14 +50,14 @@ const routes: RouteRecordRaw[] = [
         name: 'tootajadPage',
         component: TootajadPage,
         meta: { title: 'töötajad' },
-        beforeEnter: [regAuth],
+        //beforeEnter: [regAuth],
       },
       {
         path: '/puudujad',
         name: 'puudujadPage',
         component: PuudujadPage,
         meta: { title: 'mitteaktiivsed' },
-        beforeEnter: [regAuth],
+        //beforeEnter: [regAuth],
         // Soovitati väikese api puhul "otse laadiist mitte ette laadimist"
         //component: () => import('pages/puudujad/puudujadPage.vue'),
       },
@@ -67,6 +66,21 @@ const routes: RouteRecordRaw[] = [
         name: 'tootajaPage',
         component: TootajaPage,
         meta: { title: 'Töötaja:' },
+        beforeEnter: [regAuth],
+      },
+      {
+        path: '/tootmine/:grupp',
+        name: 'tootmineGrupp',
+        component: GruppTootajadPage,
+        meta: { title: 'Tööd:' },
+        //beforeEnter: [regAuth],
+      },
+      {
+        path: '/kasutaja/:id',
+        name: 'kasutajaPage',
+        component: KasutajaPage,
+        meta: { title: 'Kasutaja:' },
+        //beforeEnter: [regAuth],
       },
       {
         path: '/login',

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
-import { Tootaja } from 'src/components/models';
+import { Tootaja } from 'src/models/models';
 
 export const useTootajaStore = defineStore('tootaja', {
   state: () => ({

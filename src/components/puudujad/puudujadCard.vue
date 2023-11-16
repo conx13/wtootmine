@@ -16,7 +16,7 @@
           </q-avatar>
         </q-item-section>
         <q-item-section>
-          <q-item-label class="text-h6"
+          <q-item-label class="text-h5" style="font-size: 18px"
             >{{ user.PNIMI }} {{ user.ENIMI }}</q-item-label
           >
           <q-item-label caption>
@@ -29,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import { Tootaja } from '../models';
+import { Tootaja } from '../../models/models';
 import { useRouter } from 'vue-router';
 
 defineProps<{ user: Tootaja }>();
@@ -39,3 +39,4 @@ function tootajaInfo(tid: number) {
   router.push({ name: 'tootajaPage', params: { id: tid } });
 }
 </script>
+../../models/models

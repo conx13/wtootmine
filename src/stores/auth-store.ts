@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia';
-import { loginData, Kasutaja } from '../components/models';
+import { Kasutaja } from '../models/kasutaja/kasutaja';
+import { loginData } from '../models/models';
 import axios from 'axios';
+import { log } from 'console';
 
 export const useAuthStore = defineStore('auth', {
   state: () => {
@@ -29,6 +31,8 @@ export const useAuthStore = defineStore('auth', {
 
     //Kontrollime kas kasutaja on ok ikka
     async authStatus(): Promise<boolean> {
+      console.log('Küsime auth statust');
+
       const tulem = await axios
         .get('api/auth/authstatus')
         .then((resp) => {
@@ -36,7 +40,6 @@ export const useAuthStore = defineStore('auth', {
           return true;
         })
         .catch(() => {
-          this.logError();
           return false;
         });
       return tulem;

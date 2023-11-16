@@ -1,16 +1,11 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
 
-interface Tulem {
-  tulem: number;
-}
-
-interface toolGrupp {
-  GGRUPP: string;
-  JRK: number;
-  Kokku: number;
-  asukoht_id: number;
-}
+import {
+  Tulem,
+  toolGrupp,
+  gruppTootajad,
+} from '../../models/tootmine/tootmineModels';
 
 export const useTootmineStore = defineStore('tootmine', {
   state: () => ({
@@ -19,11 +14,19 @@ export const useTootmineStore = defineStore('tootmine', {
     loading: false,
     tanaList: [] as toolGrupp[],
     asukoht: 1,
+    gruppTootajad: [] as gruppTootajad[],
   }),
 
   getters: {
     tanaKokku(state) {
       return state.aktiivsed.tulem + state.puudujad.tulem;
+    },
+    //Tekitame listi unikaalsetest töödest
+    gruppTood(state) {
+      return state.gruppTootajad.filter(
+        (value, index, self) =>
+          self.findIndex((v) => v.JID === value.JID) === index
+      );
     },
   },
 
@@ -33,6 +36,12 @@ export const useTootmineStore = defineStore('tootmine', {
       this.aktiivsed = await getAktiivsed();
       this.puudujad = await getPuudujad();
       this.tanaList = await getAktGrupp(this.asukoht);
+      this.loading = false;
+    },
+    async getGrupp(grupp: string) {
+      this.loading = true;
+      this.gruppTootajad = [];
+      this.gruppTootajad = await getGruppTootajad(grupp);
       this.loading = false;
     },
   },
@@ -78,4 +87,30 @@ function getAktGrupp(asukoht_id: number) {
   } catch (err) {
     console.log(err);
   }
+}
+
+//Töötajad gruppide järgi
+function getGruppTootajad(grupp: string) {
+  try {
+    const data = axios.get(`/api/rkood//tanagrupp/${grupp}`).then((res) => {
+      if (res.data.length) {
+        return res.data;
+      } else {
+        return [];
+      }
+    });
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+//Abi funktsioon groupBy
+function groupBy<T>(arr: T[], fn: (item: T) => any) {
+  return arr.reduce<Record<string, T[]>>((prev, curr) => {
+    const groupKey = fn(curr);
+    const group = prev[groupKey] || [];
+    group.push(curr);
+    return { ...prev, [groupKey]: group };
+  }, {});
 }

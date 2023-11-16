@@ -1,10 +1,20 @@
 <template>
+  <q-header bordered class="bg-white text-primary" reveal>
+    <q-toolbar>
+      <q-btn flat round dense icon="arrow_back_ios" @click="tagasi" />
+      <q-toolbar-title class="text-center text-h5">
+        <div class="row justify-center text-negative">
+          <div>Pärnu: mitteaktiivsed:{{ puudujad.length }}</div>
+        </div>
+      </q-toolbar-title>
+    </q-toolbar>
+  </q-header>
   <q-page padding>
     <!-- content -->
     <div class="absolute-center" v-show="loading">
       <q-spinner color="primary" size="3em" />
     </div>
-    <div class="row" v-show="!loading">
+    <div class="row justify-center" v-show="!loading">
       <div v-if="!puudujadFilter.length">Puudujaid ei olegi!</div>
       <div v-if="puudujadFilter.length" class="col-xs-12 col-lg-3">
         <puudujadGrupid />
@@ -23,12 +33,14 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import { usePuudujadStore } from 'src/stores/tootmine/puudujad-store';
 import puudujadCard from '../../components/puudujad/puudujadCard.vue';
 import puudujadGrupid from '../../components/puudujad/puudujadGrupid.vue';
 
+const router = useRouter();
 const puudujadStore = usePuudujadStore();
-const { puudujadFilter, loading } = storeToRefs(puudujadStore);
+const { puudujadFilter, loading, puudujad } = storeToRefs(puudujadStore);
 const valik: string[] = [];
 
 onMounted(() => {
@@ -42,5 +54,8 @@ function muudaListi(nimi: string) {
   } else {
     valik.splice(valik.indexOf(nimi), 1);
   }
+}
+function tagasi() {
+  router.go(-1);
 }
 </script>
