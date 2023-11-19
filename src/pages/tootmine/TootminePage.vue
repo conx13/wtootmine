@@ -24,7 +24,7 @@
             <q-item
               clickable
               v-close-popup
-              @click="$router.push({ name: 'kasutajaPage', params: { id: 1 } })"
+              @click="$router.push({ name: 'kasutajaPage', params: { id: 4 } })"
             >
               <q-item-section>hillar.aas@matek.ee</q-item-section>
               <q-item-section avatar>
@@ -72,10 +72,10 @@ import TootmineList from '../../components/tootmine/TootmineList.vue';
 import AktiivsedRiba from '../../components/tootmine/AktiivsedRiba.vue';
 import MenuuLingid from 'components/MenuuLingid.vue';
 import { Kasutaja } from '../../models/kasutaja/kasutaja';
+import { useAuthStore } from '../../stores/auth-store';
 
 const router = useRouter();
 const tootStore = useTootmineStore();
-import { useAuthStore } from 'src/stores/auth-store';
 
 const auth = useAuthStore();
 const onLogitud = computed(() => auth.loggedIn);

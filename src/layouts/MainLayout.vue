@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { ref } from 'vue';
 import { useAuthStore } from 'src/stores/auth-store';
 import { storeToRefs } from 'pinia';
 

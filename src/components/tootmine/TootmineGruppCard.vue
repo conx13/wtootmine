@@ -37,7 +37,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineComponent } from 'vue';
+import { computed } from 'vue';
 import { gruppTootajad } from '../../models/tootmine/tootmineModels';
 import { date } from 'quasar';
 const props = defineProps<{ tootajaGrupp: gruppTootajad }>();

@@ -8,7 +8,12 @@
     >
       <q-item>
         <q-item-section avatar>
-          <q-avatar v-if="!user.pilt" size="xl" color="red" text-color="white">
+          <q-avatar
+            v-if="!user.pilt"
+            size="xl"
+            color="negative"
+            text-color="white"
+          >
             {{ user.PNIMI.charAt(0) }}{{ user.ENIMI.charAt(0) }}</q-avatar
           >
           <q-avatar v-if="user.pilt" size="xl">
@@ -39,4 +44,3 @@ function tootajaInfo(tid: number) {
   router.push({ name: 'tootajaPage', params: { id: tid } });
 }
 </script>
-../../models/models

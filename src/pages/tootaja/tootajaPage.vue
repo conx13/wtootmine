@@ -72,7 +72,7 @@ import rida from '../../components/tootaja/ridaComp.vue';
 const route = useRoute();
 const router = useRouter();
 const tootajaStore = useTootajaStore();
-const { tootaja, tahed, loading } = storeToRefs(tootajaStore);
+const { tootaja, loading } = storeToRefs(tootajaStore);
 
 onMounted(() => {
   tootajaStore.getTootaja(Number(route.params.id));
