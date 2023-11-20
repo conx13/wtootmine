@@ -1,27 +1,10 @@
 <template>
-  <q-header bordered class="bg-white text-primary" reveal>
-    <q-toolbar>
-      <q-btn flat round dense icon="arrow_back_ios" @click="tagasi" />
-      <q-toolbar-title class="text-center text-h5">
-        <div class="row justify-center">
-          <div>Pärnu: {{ $route.params.grupp }} -</div>
-
-          <div class="text-positive">
-            {{ gruppTootajad.length }}
-          </div>
-        </div>
-      </q-toolbar-title>
-    </q-toolbar>
-    <q-toolbar>
-      <q-toolbar-title>
-        <q-tabs v-model="tab" dense align="justify" active-color="primary">
-          <q-tab name="tab1" label="Töötajad" />
-          <q-tab name="tab2" label="Tööd" />
-        </q-tabs>
-      </q-toolbar-title>
-    </q-toolbar>
-  </q-header>
   <q-page padding>
+    <pealkiri
+      v-bind:pealkiri="$route.params.grupp as string"
+      :text-varv="pealkirjaVärv"
+    />
+
     <div class="absolute-center" v-show="loading">
       <q-spinner color="primary" size="3em" />
     </div>
@@ -44,11 +27,12 @@
 </template>
 
 <script setup lang="ts">
-import { defineComponent, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useTootmineStore } from '../../stores/tootmine/tootmine-store';
 import { storeToRefs } from 'pinia';
 
+import pealkiri from '../../components/yld/headerComp.vue';
 import TootmineGruppCard from '../../components/tootmine/TootmineGruppCard.vue';
 
 const route = useRoute();
@@ -56,6 +40,7 @@ const router = useRouter();
 const tootStore = useTootmineStore();
 const { gruppTootajad, loading, gruppTood } = storeToRefs(tootStore);
 const tab = ref('tab1');
+const pealkirjaVärv = 'positive';
 
 onMounted(() => tootStore.getGrupp(String(route.params.grupp)));
 function tagasi() {
