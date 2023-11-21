@@ -28,6 +28,7 @@
               />
               <q-avatar v-if="tootaja.pilt" size="130px" class="q-ma-xs">
                 <q-img
+                  ratio="1"
                   :src="`/api/pics/${tootaja.pilt}`"
                   spinner-color="white"
                 ></q-img>

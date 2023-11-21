@@ -11,7 +11,11 @@
           {{ tahed }}</q-avatar
         >
         <q-avatar v-if="tootajaGrupp.pilt" size="xl">
-          <q-img :src="`/api/pics/${tootajaGrupp.pilt}`" />
+          <q-img
+            ratio="1"
+            loading="lazy"
+            :src="`/api/pics/${tootajaGrupp.pilt}`"
+          />
         </q-avatar>
       </q-item-section>
       <q-item-section>

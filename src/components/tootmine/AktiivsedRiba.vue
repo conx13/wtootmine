@@ -13,7 +13,7 @@
       <div class="q-pt-sm row q-gutter-md">
         <div v-ripple:positive class="col relative-postion">
           <div @click="vajutasAkt">
-            <div class="text-h6 text-right text-grey-9">Aktiivsed:</div>
+            <div class="text-h6 text-right text-grey-7">Aktiivsed:</div>
             <div class="text-right">
               <q-circular-progress
                 :value="aktiivsed.tulem"
@@ -33,7 +33,7 @@
         <q-separator vertical inset />
         <div v-ripple:negative class="col relative-position">
           <div @click="vajutasMitteAkt">
-            <div class="text-h6 text-left text-grey-9">Mitteaktiivsed:</div>
+            <div class="text-h6 text-left text-grey-7">Mitteaktiivsed:</div>
             <q-circular-progress
               :value="puudujad.tulem"
               show-value
