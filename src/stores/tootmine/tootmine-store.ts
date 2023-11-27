@@ -15,6 +15,7 @@ export const useTootmineStore = defineStore('tootmine', {
     tanaList: [] as toolGrupp[],
     asukoht: 1,
     gruppTootajad: [] as gruppTootajad[],
+    tooTegijad: [] as gruppTootajad[],
   }),
 
   getters: {
@@ -31,6 +32,7 @@ export const useTootmineStore = defineStore('tootmine', {
   },
 
   actions: {
+    //võtame baasist hetkel aktiivsed koos töödega
     async getHetkelTool() {
       this.loading = true;
       this.aktiivsed = await getAktiivsed();
@@ -38,11 +40,17 @@ export const useTootmineStore = defineStore('tootmine', {
       this.tanaList = await getAktGrupp(this.asukoht);
       this.loading = false;
     },
+    //võtame baasist tööde grupid
     async getGrupp(grupp: string) {
       this.loading = true;
       this.gruppTootajad = [];
       this.gruppTootajad = await getGruppTootajad(grupp);
       this.loading = false;
+    },
+    //filtreerime töö järgi tegijad
+    async getTooTegijad(jid: number) {
+      const test = await this.gruppTootajad.filter((data) => data.JID == jid);
+      return test;
     },
   },
 });
@@ -92,7 +100,7 @@ function getAktGrupp(asukoht_id: number) {
 //Töötajad gruppide järgi
 function getGruppTootajad(grupp: string) {
   try {
-    const data = axios.get(`/api/rkood//tanagrupp/${grupp}`).then((res) => {
+    const data = axios.get(`/api/rkood/tanagrupp/${grupp}`).then((res) => {
       if (res.data.length) {
         return res.data;
       } else {
