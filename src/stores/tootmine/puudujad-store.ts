@@ -8,6 +8,7 @@ export const usePuudujadStore = defineStore('puudujad', {
     puudujaGrupid: [] as string[],
     grupiNimi: '',
     loading: false,
+    lehtLaetud: false,
   }),
 
   getters: {

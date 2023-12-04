@@ -24,7 +24,7 @@
             <q-item
               clickable
               v-close-popup
-              @click="$router.push({ name: 'kasutajaPage', params: { id: 4 } })"
+              :to="{ name: 'kasutajaPage', params: { id: 4 } }"
             >
               <q-item-section>hillar.aas@matek.ee</q-item-section>
               <q-item-section avatar>
@@ -123,7 +123,7 @@ function refresh(done: () => void) {
   setTimeout(() => {
     getAktiivsedRibaData();
     done();
-  }, 1000);
+  }, 500);
 }
 </script>
 ../../models/models

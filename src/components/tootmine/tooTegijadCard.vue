@@ -1,22 +1,30 @@
 <template>
   <q-expansion-item
-    class="bg-grey-2 overflow-hidden q-pa-xs"
-    header-class="text-h5"
-    header-style="font-size: 18px"
-    :label="too"
-    :caption="lepnr"
+    class="q-ma-sm overflow-hidden"
+    :class="[
+      new Date(viimatiVaatasid) < new Date(start) ? `bg-yellow-2` : `bg-grey-2`,
+    ]"
     group="somegroup"
-    expand-separator
     style="border-radius: 20px"
     @show="filterToo(jid)"
   >
+    <template v-slot:header>
+      <q-item-section>
+        <q-item-label style="font-size: 18px">{{ too }}</q-item-label>
+        <q-item-label caption>{{ lepnr }}</q-item-label>
+      </q-item-section>
+      <q-item-section side>
+        <q-item-label caption class="text-primary"
+          >{{ date.formatDate(start, 'HH:mm') }}
+        </q-item-label>
+      </q-item-section>
+    </template>
     <div class="row q-ml-xs q-mb-xs">
       <q-chip v-for="item in tegijaGrupp" :key="item.TID">
         <q-avatar v-show="item.pilt">
           <q-img ratio="1" loading="lazy" :src="`/api/pics/${item.pilt}`" />
         </q-avatar>
-        {{ item.PNIMI }}.{{ item.ENIMI[0] }} :
-        {{ date.formatDate(item.START, 'HH:mm') }}
+        {{ item.PNIMI }}.{{ item.ENIMI[0] }}
       </q-chip>
     </div>
     <!-- <q-badge color="positive" floating rounded label="23006" /> -->
@@ -27,14 +35,18 @@
 import { ref } from 'vue';
 import { date } from 'quasar';
 import { useTootmineStore } from '../../stores/tootmine/tootmine-store';
+import { storeToRefs } from 'pinia';
 
 const tootStore = useTootmineStore();
+//const { gruppTood, uuedTood, viimatiVaatasid } = storeToRefs(tootStore);
 
 //Paneme propsid paika
 defineProps<{
   jid: number;
   too: string;
   lepnr: string;
+  start: string;
+  viimatiVaatasid: number;
 }>();
 
 const tegijaGrupp = ref();
@@ -46,5 +58,5 @@ async function filterToo(jid: number) {
 </script>
 <style lang="sass">
 .text-caption
-  font-size:0.8rem
+  font-size:14px
 </style>

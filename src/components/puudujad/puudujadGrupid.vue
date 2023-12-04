@@ -3,6 +3,8 @@
     <q-chip
       size="lg"
       icon="groups"
+      color="negative"
+      outline
       v-for="item in puudujadTooGrupid"
       :key="item"
       clickable
