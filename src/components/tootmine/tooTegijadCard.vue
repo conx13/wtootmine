@@ -1,11 +1,16 @@
 <template>
   <q-expansion-item
-    class="q-ma-sm overflow-hidden"
+    class="q-ma-xs q-py-sm"
+    style="
+      border-radius: 20px;
+      border-color: lightblue;
+      border-style: solid;
+      border-width: 1px;
+    "
     :class="[
-      new Date(viimatiVaatasid) < new Date(start) ? `bg-yellow-2` : `bg-grey-2`,
+      new Date(viimatiVaatasid) < new Date(start) ? `bg-yellow-1` : `bg-white`,
     ]"
     group="somegroup"
-    style="border-radius: 20px"
     @show="filterToo(jid)"
   >
     <template v-slot:header>
@@ -20,7 +25,12 @@
       </q-item-section>
     </template>
     <div class="row q-ml-xs q-mb-xs">
-      <q-chip v-for="item in tegijaGrupp" :key="item.TID">
+      <q-chip
+        outline
+        color="primary"
+        v-for="item in tegijaGrupp"
+        :key="item.TID"
+      >
         <q-avatar v-show="item.pilt">
           <q-img ratio="1" loading="lazy" :src="`/api/pics/${item.pilt}`" />
         </q-avatar>

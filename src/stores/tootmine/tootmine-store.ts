@@ -55,6 +55,7 @@ export const useTootmineStore = defineStore('tootmine', {
       this.gruppTootajad = [];
       this.viimatiVaatasid = regViimatiVaatasin(grupp);
       this.gruppTootajad = await getGruppTootajad(grupp);
+
       //this.uuedTood = muutunudElTood(this.gruppTootajad, grupp);
       this.loading = false;
     },
@@ -146,11 +147,12 @@ function muutunudElTood(tood: gruppTootajad[], grupp: string) {
 }
 //Kirjutame andmete baasist lugemise aja localSessi
 function regViimatiVaatasin(grupp: string): number {
+  let kpv: number = Date.now();
   if (sessionStorage.getItem(grupp + '_checkpoint')) {
-    return Number(sessionStorage.getItem(grupp + '_checkpoint'));
+    kpv = Number(sessionStorage.getItem(grupp + '_checkpoint'));
   }
   sessionStorage.setItem(grupp + '_checkpoint', String(Date.now()));
-  return Date.now();
+  return kpv;
 }
 
 //Abi funktsioon groupBy

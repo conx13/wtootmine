@@ -2,8 +2,13 @@
   <div class="row-inline q-ma-sm" v-for="item in tanaList" :key="item.JRK">
     <!-- <q-card class="bg-grey-1" flat bordered @click="gruppTootajad(item.GGRUPP)"> -->
     <q-item
-      class="bg-grey-2 q-pa-sm q-py-sd"
-      style="border-radius: 30px"
+      class="q-pa-sm q-py-sd"
+      style="
+        border-radius: 30px;
+        border-color: lightblue;
+        border-style: solid;
+        border-width: 1px;
+      "
       clickable
       v-ripple
       :to="{ name: 'tootmineGrupp', params: { grupp: item.GGRUPP } }"
@@ -28,12 +33,17 @@
       </q-item-section>
       <q-item-section>
         <q-item-label>
-          <div v-show="item.JRK == 1" class="text-h5 text-negative">
+          <div
+            class="text-h5"
+            :class="[item.JRK != 1 ? `text-grey-9` : `text-negative`]"
+          >
             {{ item.GGRUPP }}
           </div>
-          <div v-show="item.JRK != 1" class="text-h5 text-grey-9">
-            {{ item.GGRUPP }}
-          </div>
+
+          <!--             TODO Sünnipäevad
+            <q-badge outline rounded color="orange" label="1" align="top"
+              ><q-icon name="cake"
+            /></q-badge> -->
         </q-item-label>
       </q-item-section>
       <q-item-section side>
@@ -56,5 +66,5 @@ import { storeToRefs } from 'pinia';
 import { useTootmineStore } from '../../stores/tootmine/tootmine-store';
 
 const tootStore = useTootmineStore();
-const { aktiivsed, tanaList, tanaKokku } = storeToRefs(tootStore);
+const { aktiivsed, tanaList } = storeToRefs(tootStore);
 </script>

@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-footer v-if="loggedIn" bordered class="bg-white text-primary" reveal>
+    <q-footer bordered class="bg-white text-primary" reveal>
       <q-tabs
         no-caps
         dense
@@ -11,13 +11,13 @@
       >
         <q-route-tab
           name="home"
-          icon="home"
+          icon="las la-home"
           label="Kodu"
           :to="{ name: 'tootminePage' }"
         />
         <q-route-tab
           name="person"
-          icon="groups"
+          icon="las la-users"
           label="Töötajad"
           :to="{ name: 'tootajadPage' }"
         />

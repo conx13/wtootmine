@@ -3,7 +3,8 @@ import {
   RouteLocationNormalized,
   RouteRecordRaw,
 } from 'vue-router';
-import MainLayout from 'layouts/MainLayout.vue';
+import TootmineLayout from 'src/layouts/TootmineLayout.vue';
+import AuthLayout from '../layouts/AuthLayout.vue';
 import { useAuthStore } from 'src/stores/auth-store';
 
 import TootminePage from 'pages/tootmine/TootminePage.vue';
@@ -36,14 +37,14 @@ async function regAuth(
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    component: MainLayout,
+    component: TootmineLayout,
+    beforeEnter: [regAuth],
     children: [
       {
         path: '',
         name: 'tootminePage',
         component: TootminePage,
         meta: { title: 'tootmine' },
-        beforeEnter: [regAuth],
       },
       {
         path: '/tootajad',
@@ -66,7 +67,7 @@ const routes: RouteRecordRaw[] = [
         name: 'tootajaPage',
         component: TootajaPage,
         meta: { title: 'Töötaja:' },
-        beforeEnter: [regAuth],
+        //beforeEnter: [regAuth],
       },
       {
         path: '/tootmine/:grupp',
@@ -82,6 +83,12 @@ const routes: RouteRecordRaw[] = [
         meta: { title: 'Kasutaja:' },
         //beforeEnter: [regAuth],
       },
+    ],
+  },
+  {
+    path: '/',
+    component: AuthLayout,
+    children: [
       {
         path: '/login',
         name: 'userLogin',

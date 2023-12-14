@@ -2,34 +2,32 @@
   <!-- <q-card class="my-card bg-grey-1" flat bordered> -->
   <q-slide-item
     class="q-my-xs"
-    left-color="warning"
-    right-color="negative"
-    @left="onLeft"
+    right-color="warning"
     @right="onRight"
+    style="border-radius: 20px"
   >
-    <template v-slot:left>
-      <div class="row items-center">
-        <q-icon left name="pause_circle" /> Töö ootel
-      </div>
-    </template>
     <template v-slot:right>
       <div class="row items-center">
-        Töö lõpp <q-icon right name="stop_circle" />
+        Töö ootel <q-icon size="xl" right name="stop_circle" />
       </div>
     </template>
     <q-item
-      class="bg-grey-2"
-      style="border-radius: 20px"
+      style="
+        border-radius: 20px;
+        border-color: lightblue;
+        border-style: solid;
+        border-width: 1px;
+      "
       :class="[
         new Date(viimatiVaatasid) < new Date(tootajaGrupp.START)
-          ? `bg-yellow-2`
-          : `bg-grey-2`,
+          ? `bg-yellow-1`
+          : `bg-white`,
       ]"
     >
       <q-item-section avatar>
         <q-avatar
           v-if="!tootajaGrupp.pilt"
-          size="xd"
+          size="xl"
           color="grey-5"
           text-color="white"
         >

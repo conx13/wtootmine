@@ -81,7 +81,7 @@
 import { QForm } from 'quasar';
 import { ref } from 'vue';
 import { useAuthStore } from 'src/stores/auth-store';
-import { loginData } from '../components/models';
+import { loginData } from '../models/models';
 import { useRouter, useRoute } from 'vue-router';
 
 const router = useRouter();
@@ -101,8 +101,6 @@ function isValidEmail(email: string) {
 async function onLoginSubmit() {
   //loginForm.value?.validate();
   await auth.login(logindata.value);
-  console.log(route.query.redirect, 'Router query');
-
   router.push((route.query.redirect as string) || '/');
 }
 </script>

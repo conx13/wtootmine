@@ -2,15 +2,32 @@
   <q-item
     clickable
     v-ripple
+    class="q-my-sm"
+    @click="tootajaBaasist(user.TID)"
     :to="{ name: 'tootajaPage', params: { id: user.TID } }"
-    class="bg-deep-orange-2 q-my-sm"
-    style="border-radius: 30px"
+    style="
+      border-radius: 20px;
+      border-color: lightpink;
+      border-style: solid;
+      border-width: 1px;
+    "
   >
     <q-item-section avatar>
-      <q-avatar v-if="!user.pilt" size="xl" color="negative" text-color="white">
+      <q-avatar
+        v-if="!user.pilt"
+        size="xl"
+        color="red-2"
+        text-color="white"
+        class="q-pa-xs"
+      >
         {{ user.PNIMI.charAt(0) }}{{ user.ENIMI.charAt(0) }}</q-avatar
       >
-      <q-avatar v-if="user.pilt" size="xl">
+      <q-avatar
+        v-if="user.pilt"
+        size="xl"
+        color="deep-orange-2"
+        class="q-pa-xs"
+      >
         <q-img ratio="1" loading="eager" :src="`/api/pics/${user.pilt}`" />
       </q-avatar>
     </q-item-section>
@@ -36,14 +53,18 @@ chevron_right"
 
 <script setup lang="ts">
 import { Tootaja } from '../../models/models';
-import { useRouter } from 'vue-router';
+import { useTootajaStore } from 'src/stores/tootmine/tootaja-store';
+
+const tootajaStore = useTootajaStore();
 
 defineProps<{ user: Tootaja }>();
-const router = useRouter();
 
-function tootajaInfo(tid: number) {
+function tootajaBaasist(tid: number) {
+  tootajaStore.getTootaja(Number(tid));
+}
+/* function tootajaInfo(tid: number) {
   console.log('puuduja click');
 
   router.push({ name: 'tootajaPage', params: { id: tid } });
-}
+} */
 </script>

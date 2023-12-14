@@ -1,22 +1,17 @@
 <template>
-  <q-header v-if="onLogitud" bordered class="bg-white text-primary" reveal>
-    <q-toolbar>
-      <q-btn
-        flat
-        dense
-        round
-        icon="menu"
-        aria-label="Menu"
-        @click="toggleLeftDrawer"
-      />
-
+  <q-header bordered class="bg-white text-primary" reveal>
+    <q-toolbar class="q-py-sm">
       <q-toolbar-title class="text-center text-h5">
         Pärnu: {{ $route.meta.title }}</q-toolbar-title
       >
       <q-btn outline rounded no-caps padding="none">
-        <div v-if="user" class="row items-center">
-          <q-avatar size="30px" color="grey" text-color="white" class="q-ma-xs"
-            >{{ user.enimi?.charAt(0) }}{{ user.pnimi?.charAt(0) }}</q-avatar
+        <div v-if="kasutaja" class="row items-center">
+          <q-avatar
+            size="30px"
+            color="grey"
+            text-color="white"
+            class="q-ma-xs"
+            >{{ kasutaja[0] }}</q-avatar
           >
         </div>
         <q-menu content-class="bg-blue-grey-5 text-white">
@@ -26,7 +21,7 @@
               v-close-popup
               :to="{ name: 'kasutajaPage', params: { id: 4 } }"
             >
-              <q-item-section>hillar.aas@matek.ee</q-item-section>
+              <q-item-section>{{ kasutaja }}</q-item-section>
               <q-item-section avatar>
                 <q-icon name="user"></q-icon>
               </q-item-section>
@@ -43,87 +38,46 @@
       <!-- <div>Quasar v{{ $q.version }}</div> -->
     </q-toolbar>
   </q-header>
-  <q-drawer v-if="onLogitud" v-model="leftDrawerOpen" show-if-above bordered>
-    <q-list>
-      <q-item-label header> Valikud: </q-item-label>
-      <MenuuLingid v-for="link in menuuList" :key="link.title" v-bind="link" />
-    </q-list>
-  </q-drawer>
+
   <q-page style="padding-top: 120px">
-    <div class="row-inline q-ma-xs">
+    <div class="">
       <q-pull-to-refresh @refresh="refresh">
         <div class="row justify-center">
           <div class="col-xs-12 col-lg-3">
             <tootmine-list />
+            <!--Kuna kasutame Sticky, siis peab olema kõige lõpus-->
+            <aktiivsed-riba />
           </div>
         </div>
-        <!--Kuna kasutame Sticky, siis peab olema kõige lõpus-->
-        <aktiivsed-riba @aktiiv="aktiiv" @mitteakt="mitteakt" />
       </q-pull-to-refresh>
     </div>
   </q-page>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { onMounted } from 'vue';
 import { useTootmineStore } from '../../stores/tootmine/tootmine-store';
 import TootmineList from '../../components/tootmine/TootmineList.vue';
 import AktiivsedRiba from '../../components/tootmine/AktiivsedRiba.vue';
-import MenuuLingid from 'components/MenuuLingid.vue';
-import { Kasutaja } from '../../models/kasutaja/kasutaja';
-import { useAuthStore } from '../../stores/auth-store';
 
-const router = useRouter();
+import { useAuthStore } from '../../stores/auth-store';
+import { storeToRefs } from 'pinia';
+
 const tootStore = useTootmineStore();
 
 const auth = useAuthStore();
-const onLogitud = computed(() => auth.loggedIn);
-const user = computed(() => <Kasutaja>auth.user);
-const linkideList = [
-  {
-    title: 'Hetkeseis',
-    icon: 'today',
-    link: 'tootminePage',
-  },
-  {
-    title: 'Töötajad',
-    icon: 'groups',
-    link: 'tootajadPage',
-  },
-];
-const menuuList = linkideList;
+const { kasutaja } = storeToRefs(useAuthStore());
 
-async function getAktiivsedRibaData() {
-  await tootStore.getHetkelTool();
-}
 onMounted(() => {
-  getAktiivsedRibaData();
+  tootStore.getHetkelTool();
+  //getAktiivsedRibaData();
 });
-
-function mitteakt() {
-  //puudujadStore.getPuudujad();
-  router.push({ name: 'puudujadPage' });
-  return;
-}
-function aktiiv() {
-  router.push({ name: 'tootajadPage' });
-  return;
-}
-
-const leftDrawerOpen = ref(false);
-function toggleLeftDrawer() {
-  leftDrawerOpen.value = !leftDrawerOpen.value;
-}
 
 function logiValja() {
   auth.logout();
 }
-function refresh(done: () => void) {
-  setTimeout(() => {
-    getAktiivsedRibaData();
-    done();
-  }, 500);
+async function refresh(done: () => void) {
+  await tootStore.getHetkelTool();
+  done();
 }
 </script>
-../../models/models

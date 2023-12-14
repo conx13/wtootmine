@@ -2,13 +2,13 @@ import { defineStore } from 'pinia';
 import { Kasutaja } from '../models/kasutaja/kasutaja';
 import { loginData } from '../models/models';
 import axios from 'axios';
-import { log } from 'console';
 
 export const useAuthStore = defineStore('auth', {
   state: () => {
     return {
-      loggedIn: false,
+      loggedIn: localStorage.getItem('loggedIn') === 'true',
       user: {} as Kasutaja | null,
+      kasutaja: localStorage.getItem('kasutaja'),
     };
   },
   actions: {
@@ -31,8 +31,6 @@ export const useAuthStore = defineStore('auth', {
 
     //Kontrollime kas kasutaja on ok ikka
     async authStatus(): Promise<boolean> {
-      console.log('Küsime auth statust');
-
       const tulem = await axios
         .get('api/auth/authstatus')
         .then((resp) => {
@@ -49,11 +47,17 @@ export const useAuthStore = defineStore('auth', {
     setLoggingIn(data: Kasutaja) {
       this.user = data;
       this.loggedIn = true;
+      this.kasutaja = data.email;
+      localStorage.setItem('kasutaja', data.email);
+      localStorage.setItem('loggedIn', 'true');
     },
     //Kui logimisel miskit valesti, siis nullime andmed
     logError() {
       this.loggedIn = false;
       this.user = null;
+      this.kasutaja = null;
+      localStorage.removeItem('kasutaja');
+      localStorage.removeItem('loggedIn');
     },
   },
 });

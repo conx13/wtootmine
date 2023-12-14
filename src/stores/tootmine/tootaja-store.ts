@@ -2,21 +2,15 @@ import { defineStore } from 'pinia';
 import axios from 'axios';
 import { Tootaja } from 'src/models/models';
 
+interface AppState {
+  tootaja: Tootaja | null;
+  loading: boolean;
+}
 export const useTootajaStore = defineStore('tootaja', {
-  state: () => ({
-    tootaja: {} as Tootaja,
+  state: (): AppState => ({
+    tootaja: null,
     loading: false,
   }),
-
-  getters: {
-    tahed(state) {
-      if (state.tootaja !== undefined) {
-        return state.tootaja.PNIMI?.charAt(0) + state.tootaja.ENIMI?.charAt(0);
-      } else {
-        return '...';
-      }
-    },
-  },
 
   actions: {
     async getTootaja(tid: number) {

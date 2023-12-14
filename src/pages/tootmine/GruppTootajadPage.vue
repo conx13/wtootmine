@@ -1,7 +1,7 @@
 <template>
   <q-header bordered class="bg-white text-primary" reveal>
-    <q-toolbar>
-      <q-btn flat round dense icon="arrow_back_ios" @click="$router.go(-1)" />
+    <q-toolbar class="q-py-sm">
+      <q-btn flat round icon="arrow_back_ios" @click="$router.go(-1)" />
       <q-toolbar-title :class="`text-h5 text-grey-8`">{{
         $route.params.grupp
       }}</q-toolbar-title>
@@ -28,31 +28,32 @@
     <!-- content -->
     <div class="row justify-center" v-show="!loading">
       <div class="col-lg-3 col-xs-12">
-        <q-tab-panels animated v-model="tab" @transition="aktiivneSakk()">
+        <q-tab-panels
+          keep-alive
+          animated
+          v-model="tab"
+          @transition="aktiivneSakk()"
+        >
           <q-tab-panel name="tootajad" class="no-padding">
-            <q-list bordered>
-              <tootmine-grupp-card
-                v-for="item in gruppTootajad"
-                :key="item.TID"
-                :tootaja-grupp="item"
-                :viimati-vaatasid="viimatiVaatasid"
-              />
-            </q-list>
+            <tootmine-grupp-card
+              v-for="item in gruppTootajad"
+              :key="item.TID"
+              :tootaja-grupp="item"
+              :viimati-vaatasid="viimatiVaatasid"
+            />
             <!-- </div> -->
           </q-tab-panel>
           <q-tab-panel name="tood" class="no-padding">
-            <q-list bordered>
-              <too-tegijad-card
-                :jid="item.JID"
-                :too="item.TOO"
-                :start="item.START"
-                :viimati-vaatasid="viimatiVaatasid"
-                :lepnr="item.LEPNR"
-                v-for="item in gruppTood"
-                :key="item.TID"
-                :tootaja-grupp="item"
-              />
-            </q-list>
+            <too-tegijad-card
+              :jid="item.JID"
+              :too="item.TOO"
+              :start="item.START"
+              :viimati-vaatasid="viimatiVaatasid"
+              :lepnr="item.LEPNR"
+              v-for="item in gruppTood"
+              :key="item.TID"
+              :tootaja-grupp="item"
+            />
           </q-tab-panel>
         </q-tab-panels>
       </div>
