@@ -1,18 +1,7 @@
-import {
-  NavigationGuardNext,
-  RouteLocationNormalized,
-  RouteRecordRaw,
-} from 'vue-router';
+import { NavigationGuardNext, RouteLocationNormalized } from 'vue-router';
 import TootmineLayout from 'src/layouts/TootmineLayout.vue';
 import AuthLayout from '../layouts/AuthLayout.vue';
 import { useAuthStore } from 'src/stores/auth-store';
-
-import TootminePage from 'pages/tootmine/TootminePage.vue';
-import PuudujadPage from 'pages/puudujad/puudujadPage.vue';
-import TootajadPage from 'pages/tootajad/tootajadPage.vue';
-import TootajaPage from 'pages/tootaja/tootajaPage.vue';
-import GruppTootajadPage from 'pages/tootmine/GruppTootajadPage.vue';
-import KasutajaPage from 'pages/kasutaja/KasutajaPage.vue';
 
 import UserLogin from 'pages/UserLogin.vue';
 
@@ -22,6 +11,7 @@ async function regAuth(
   next: NavigationGuardNext
 ) {
   const auth = useAuthStore();
+  console.log('Ruuter kontrollib auth statust');
   if (await auth.authStatus()) {
     console.log('Kasutaja on logitud');
     next();
@@ -34,7 +24,7 @@ async function regAuth(
   }
 }
 
-const routes: RouteRecordRaw[] = [
+const routes = [
   {
     path: '/',
     component: TootmineLayout,
@@ -43,44 +33,43 @@ const routes: RouteRecordRaw[] = [
       {
         path: '',
         name: 'tootminePage',
-        component: TootminePage,
+        component: () => import('pages/tootmine/TootminePage.vue'),
         meta: { title: 'tootmine' },
+      },
+      {
+        path: '/tootmine/:grupp',
+        name: 'tootmineGrupp',
+        meta: { title: 'Tööd:' },
+        component: () => import('pages/tootmine/GruppTootajadPage.vue'),
+        //beforeEnter: [regAuth],
       },
       {
         path: '/tootajad',
         name: 'tootajadPage',
-        component: TootajadPage,
         meta: { title: 'töötajad' },
+        component: () => import('pages/tootajad/tootajadPage.vue'),
         //beforeEnter: [regAuth],
       },
       {
         path: '/puudujad',
         name: 'puudujadPage',
-        component: PuudujadPage,
         meta: { title: 'mitteaktiivsed' },
         //beforeEnter: [regAuth],
         // Soovitati väikese api puhul "otse laadiist mitte ette laadimist"
-        //component: () => import('pages/puudujad/puudujadPage.vue'),
+        component: () => import('pages/puudujad/puudujadPage.vue'),
       },
       {
         path: '/tootaja/:id',
         name: 'tootajaPage',
-        component: TootajaPage,
         meta: { title: 'Töötaja:' },
-        //beforeEnter: [regAuth],
-      },
-      {
-        path: '/tootmine/:grupp',
-        name: 'tootmineGrupp',
-        component: GruppTootajadPage,
-        meta: { title: 'Tööd:' },
+        component: () => import('pages/tootaja/tootajaPage.vue'),
         //beforeEnter: [regAuth],
       },
       {
         path: '/kasutaja/:id',
         name: 'kasutajaPage',
-        component: KasutajaPage,
         meta: { title: 'Kasutaja:' },
+        component: () => import('pages/kasutaja/KasutajaPage.vue'),
         //beforeEnter: [regAuth],
       },
     ],

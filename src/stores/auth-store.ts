@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { Kasutaja } from '../models/kasutaja/kasutaja';
+import { Kasutaja } from '../models/kasutaja/kasutajaModel';
 import { loginData } from '../models/models';
 import axios from 'axios';
 
@@ -8,9 +8,10 @@ export const useAuthStore = defineStore('auth', {
     return {
       loggedIn: localStorage.getItem('loggedIn') === 'true',
       user: {} as Kasutaja | null,
-      kasutaja: localStorage.getItem('kasutaja'),
+      email: localStorage.getItem('email'),
     };
   },
+
   actions: {
     //Logime välja
     async logout() {
@@ -31,13 +32,18 @@ export const useAuthStore = defineStore('auth', {
 
     //Kontrollime kas kasutaja on ok ikka
     async authStatus(): Promise<boolean> {
+      console.log('Kontrollime auth statust');
+
       const tulem = await axios
         .get('api/auth/authstatus')
         .then((resp) => {
           this.setLoggingIn(resp.data.user);
+          console.log('on sisse logitud');
+
           return true;
         })
         .catch(() => {
+          console.log('ei ole sisse logitud');
           return false;
         });
       return tulem;
@@ -47,15 +53,15 @@ export const useAuthStore = defineStore('auth', {
     setLoggingIn(data: Kasutaja) {
       this.user = data;
       this.loggedIn = true;
-      this.kasutaja = data.email;
-      localStorage.setItem('kasutaja', data.email);
+      this.email = data.email;
+      localStorage.setItem('email', data.email);
       localStorage.setItem('loggedIn', 'true');
     },
     //Kui logimisel miskit valesti, siis nullime andmed
     logError() {
       this.loggedIn = false;
       this.user = null;
-      this.kasutaja = null;
+      this.email = null;
       localStorage.removeItem('kasutaja');
       localStorage.removeItem('loggedIn');
     },

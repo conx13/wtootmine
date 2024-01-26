@@ -1,56 +1,70 @@
 <template>
-  <q-header bordered class="bg-white text-primary" reveal>
-    <q-toolbar class="q-py-sm">
-      <q-toolbar-title class="text-center text-h5">
-        Pärnu: {{ $route.meta.title }}</q-toolbar-title
-      >
-      <q-btn outline rounded no-caps padding="none">
-        <div v-if="kasutaja" class="row items-center">
-          <q-avatar
-            size="30px"
-            color="grey"
-            text-color="white"
-            class="q-ma-xs"
-            >{{ kasutaja[0] }}</q-avatar
-          >
-        </div>
-        <q-menu content-class="bg-blue-grey-5 text-white">
-          <q-list>
-            <q-item
-              clickable
-              v-close-popup
-              :to="{ name: 'kasutajaPage', params: { id: 4 } }"
-            >
-              <q-item-section>{{ kasutaja }}</q-item-section>
-              <q-item-section avatar>
-                <q-icon name="user"></q-icon>
-              </q-item-section>
-            </q-item>
-            <q-item clickable v-close-popup @click="logiValja">
-              <q-item-section>Logi välja</q-item-section>
-              <q-item-section avatar>
-                <q-icon name="exit_to_app"></q-icon>
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </q-menu>
-      </q-btn>
-      <!-- <div>Quasar v{{ $q.version }}</div> -->
-    </q-toolbar>
-  </q-header>
-
   <q-page style="padding-top: 120px">
-    <div class="">
-      <q-pull-to-refresh @refresh="refresh">
-        <div class="row justify-center">
-          <div class="col-xs-12 col-lg-3">
-            <tootmine-list />
-            <!--Kuna kasutame Sticky, siis peab olema kõige lõpus-->
-            <aktiivsed-riba />
+    <q-header bordered class="bg-white text-primary" reveal>
+      <q-toolbar class="">
+        <div class="row full-width items-center">
+          <div class="col test">
+            <q-toolbar-title shrink class="text-h5 q-pl-none">
+              {{ user?.asukoht }}: {{ $route.meta.title }}
+            </q-toolbar-title>
+          </div>
+          <div class="col text-right">
+            <q-btn outline rounded no-caps padding="none">
+              <!-- <div v-if="email" class="row items-center"> -->
+
+              <q-avatar v-if="user?.pilt" size="30px" class="q-ma-xs"
+                ><q-img
+                  spinner-color="white"
+                  ratio="1"
+                  loading="eager"
+                  :src="`/api/pics/${user?.pilt}`"
+              /></q-avatar>
+              <q-avatar
+                v-else
+                size="30px"
+                color="grey"
+                text-color="white"
+                icon="account_circle"
+                class="q-ma-xs"
+              />
+              <!-- </div> -->
+              <q-menu content-class="bg-blue-grey-5 text-white">
+                <q-list>
+                  <q-item
+                    clickable
+                    v-close-popup
+                    :to="{ name: 'kasutajaPage', params: { id: user?.id } }"
+                  >
+                    <q-item-section>{{ email }}</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon color="blue-grey-5" name="person"></q-icon>
+                    </q-item-section>
+                  </q-item>
+                  <q-item clickable v-close-popup @click="logiValja">
+                    <q-item-section>Logi välja</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="exit_to_app"></q-icon>
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-menu>
+            </q-btn>
           </div>
         </div>
-      </q-pull-to-refresh>
-    </div>
+        <!--     -->
+        <!-- <div>Quasar v{{ $q.version }}</div> -->
+      </q-toolbar>
+    </q-header>
+
+    <q-pull-to-refresh @refresh="refresh">
+      <div class="row justify-center">
+        <div class="col-xs-12 col-lg-3">
+          <tootmine-list />
+          <!--Kuna kasutame Sticky, siis peab olema kõige lõpus-->
+          <aktiivsed-riba />
+        </div>
+      </div>
+    </q-pull-to-refresh>
   </q-page>
 </template>
 
@@ -66,7 +80,7 @@ import { storeToRefs } from 'pinia';
 const tootStore = useTootmineStore();
 
 const auth = useAuthStore();
-const { kasutaja } = storeToRefs(useAuthStore());
+const { email, user } = storeToRefs(useAuthStore());
 
 onMounted(() => {
   tootStore.getHetkelTool();
@@ -81,3 +95,10 @@ async function refresh(done: () => void) {
   done();
 }
 </script>
+
+<style lang="sass">
+.test
+  position: absolute
+  left: 50%
+  transform: translateX(-50%)
+</style>

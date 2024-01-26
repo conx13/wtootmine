@@ -11,6 +11,7 @@
       "
       clickable
       v-ripple
+      @click="getTegijad(item.GGRUPP)"
       :to="{ name: 'tootmineGrupp', params: { grupp: item.GGRUPP } }"
     >
       <q-item-section avatar class="">
@@ -67,4 +68,9 @@ import { useTootmineStore } from '../../stores/tootmine/tootmine-store';
 
 const tootStore = useTootmineStore();
 const { aktiivsed, tanaList } = storeToRefs(tootStore);
+
+//Täidame store grupi tegijatega
+function getTegijad(grupp: string) {
+  tootStore.getGrupp(String(grupp));
+}
 </script>

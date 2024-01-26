@@ -1,32 +1,41 @@
 <template>
   <q-layout view="lHh Lpr lFf">
+    <!-- <q-ajax-bar ref="bar" color="blue" size="5px" /> -->
+
+    <q-page-container>
+      <router-view v-slot="{ Component }">
+        <component :is="Component" />
+      </router-view>
+      <!-- <router-view /> -->
+    </q-page-container>
     <q-footer bordered class="bg-white text-primary" reveal>
       <q-tabs
         no-caps
-        dense
         active-color="primary"
         indicator-color="transparent"
         class="text-grey"
         v-model="tab"
       >
         <q-route-tab
-          name="home"
-          icon="las la-home"
-          label="Kodu"
+          name="tootmine"
+          icon="home"
+          label="Tootmine"
           :to="{ name: 'tootminePage' }"
         />
         <q-route-tab
+          name="kasutaja"
+          icon="manage_accounts"
+          label="Kasutaja"
+          :to="{ name: 'kasutajaPage', params: { id: user?.id } }"
+        />
+        <q-route-tab
           name="person"
-          icon="las la-users"
+          icon="group"
           label="Töötajad"
           :to="{ name: 'tootajadPage' }"
         />
       </q-tabs>
     </q-footer>
-    <q-ajax-bar ref="bar" color="blue" size="5px" />
-    <q-page-container>
-      <router-view />
-    </q-page-container>
   </q-layout>
 </template>
 
@@ -36,7 +45,7 @@ import { useAuthStore } from 'src/stores/auth-store';
 import { storeToRefs } from 'pinia';
 
 const auth = useAuthStore();
-const { loggedIn } = storeToRefs(auth);
+const { loggedIn, user } = storeToRefs(auth);
 
 const tab = ref('home');
 

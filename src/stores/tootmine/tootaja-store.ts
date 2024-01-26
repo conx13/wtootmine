@@ -13,22 +13,18 @@ export const useTootajaStore = defineStore('tootaja', {
   }),
 
   actions: {
+    /* ------------------------- baasist otsime töötaja ------------------------- */
     async getTootaja(tid: number) {
       this.loading = true;
-      const data = await tootajaBaasist(tid);
-      if (data !== undefined) {
-        this.tootaja = data;
+      try {
+        const data = await axios.get<Tootaja[]>(`/api/users/user/${tid}`);
+        if (data.data !== undefined) {
+          this.tootaja = data.data[0];
+        }
+      } catch (error) {
+        console.log(error, 'Kasutaja error');
       }
       this.loading = false;
     },
   },
 });
-
-async function tootajaBaasist(tid: number) {
-  try {
-    const data = await axios.get<Tootaja[]>(`/api/users/user/${tid}`);
-    return data.data[0];
-  } catch (err) {
-    console.log(err, 'Kasutaja error');
-  }
-}

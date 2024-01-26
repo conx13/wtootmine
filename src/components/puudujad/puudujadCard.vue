@@ -1,38 +1,27 @@
 <template>
   <q-item
     clickable
-    v-ripple
-    class="q-my-sm"
+    v-ripple:negative
+    class="q-pr-xs"
     @click="tootajaBaasist(user.TID)"
-    :to="{ name: 'tootajaPage', params: { id: user.TID } }"
-    style="
-      border-radius: 20px;
-      border-color: lightpink;
-      border-style: solid;
-      border-width: 1px;
-    "
   >
     <q-item-section avatar>
-      <q-avatar
+      <div
         v-if="!user.pilt"
-        size="xl"
-        color="red-2"
-        text-color="white"
-        class="q-pa-xs"
+        class="ring_text text-negative"
+        style="border: 2px solid #c10015"
       >
-        {{ user.PNIMI.charAt(0) }}{{ user.ENIMI.charAt(0) }}</q-avatar
-      >
-      <q-avatar
-        v-if="user.pilt"
-        size="xl"
-        color="deep-orange-2"
-        class="q-pa-xs"
-      >
-        <q-img ratio="1" loading="eager" :src="`/api/pics/${user.pilt}`" />
-      </q-avatar>
+        {{ user.PNIMI.charAt(0) }}{{ user.ENIMI.charAt(0) }}
+      </div>
+      <img
+        v-else
+        class="vaike_ringpilt"
+        style="border: 2px solid #c10015"
+        :src="`/api/pics/${user.pilt}`"
+      />
     </q-item-section>
     <q-item-section>
-      <q-item-label class="text-h5" style="font-size: 18px"
+      <q-item-label class="text-h5 text-weight-medium" style="font-size: 18px"
         >{{ user.PNIMI }} {{ user.ENIMI }}</q-item-label
       >
       <q-item-label caption>
@@ -41,6 +30,7 @@
     </q-item-section>
     <q-item-section side>
       <q-btn
+        color="negative"
         flat
         round
         dense
@@ -49,22 +39,23 @@ chevron_right"
       ></q-btn>
     </q-item-section>
   </q-item>
+  <q-separator inset="item" style="margin-left: 87px" color="red-2" />
 </template>
 
 <script setup lang="ts">
 import { Tootaja } from '../../models/models';
 import { useTootajaStore } from 'src/stores/tootmine/tootaja-store';
+import { useRouter } from 'vue-router';
 
 const tootajaStore = useTootajaStore();
-
+const router = useRouter();
 defineProps<{ user: Tootaja }>();
 
 function tootajaBaasist(tid: number) {
   tootajaStore.getTootaja(Number(tid));
+  setTimeout(() => {
+    router.push({ name: 'tootajaPage', params: { id: tid } });
+  }, 150);
 }
-/* function tootajaInfo(tid: number) {
-  console.log('puuduja click');
-
-  router.push({ name: 'tootajaPage', params: { id: tid } });
-} */
 </script>
+<style lang="sass"></style>

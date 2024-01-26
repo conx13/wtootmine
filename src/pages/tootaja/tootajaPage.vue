@@ -13,9 +13,6 @@
     </div>
     <div v-show="!loading">
       <div class="row justify-center">
-        <!-- <div class="myribakood text-h5 q-mb-md">*{{ tootaja.IKOOD }}*</div> -->
-      </div>
-      <div class="row justify-center">
         <div class="col-xs-12 col-lg-3">
           <div class="row justify-center">
             <q-btn outline round no-caps class="shadow-5" color="grey-1">
@@ -23,7 +20,7 @@
                 v-if="!tootaja?.pilt"
                 size="130px"
                 text-color="grey-5"
-                icon="add_a_photo"
+                icon="person"
                 class="q-ma-xs"
               />
               <q-avatar v-if="tootaja?.pilt" size="130px" class="q-ma-xs">
@@ -42,9 +39,11 @@
           </div>
           <q-separator inset class="q-mb-md" />
           <a :href="`tel:${tootaja?.telefon}`">
-            <rida rea-tekst="Telefon" :rea-data="tootaja?.telefon" />
-            <rida rea-tekst="Email" :rea-data="tootaja?.email" />
+            <div v-ripple:primary class="relative-position">
+              <rida rea-tekst="Telefon" :rea-data="tootaja?.telefon" />
+            </div>
           </a>
+          <rida rea-tekst="Email" :rea-data="tootaja?.email" />
 
           <q-separator inset class="q-my-md" />
 
@@ -76,10 +75,9 @@ const tootajaStore = useTootajaStore();
 const { tootaja, loading } = storeToRefs(tootajaStore);
 
 onMounted(() => {
-  //Kontrollime kas juba on andmed stores olemas
-  console.log(tootaja.value, 'Tootaja value');
-
-  if (tootaja.value === null) {
+  //Kontrollime kas juba on andmed stores olemas või andmed on tulemas
+  if (tootaja.value === null && !loading.value) {
+    console.log(loading.value, 'Tootaja loading value');
     tootajaStore.getTootaja(Number(route.params.id));
   }
 });

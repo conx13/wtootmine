@@ -1,6 +1,6 @@
 <template>
   <q-pull-to-refresh @refresh="refresh">
-    <q-page padding>
+    <q-page>
       <pealkiri
         :pealkiri="`Mitteaktiivsed:` + String(puudujad.length)"
         :text-varv="pealkirjaVärv"
@@ -14,11 +14,7 @@
         <div v-if="!puudujadFilter.length">Puudujaid ei olegi!</div>
         <div v-if="puudujadFilter.length" class="col-xs-12 col-lg-3">
           <puudujadGrupid />
-          <div
-            class="row-inline q-ma-xs"
-            v-for="item in puudujadFilter"
-            :key="item.TID"
-          >
+          <div v-for="item in puudujadFilter" :key="item.TID">
             <puudujadCard :user="item" />
           </div>
         </div>

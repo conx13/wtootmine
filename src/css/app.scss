@@ -17,3 +17,31 @@
 .myribakood {
   font-family: 'myribakood';
 }
+.ring_text {
+  border-radius: 50%;
+  width: 55px;
+  height: 55px;
+  line-height: 55px;
+  background: #fff;
+  //color: #c10015;
+  text-align: center;
+  font-size: 28px;
+}
+.vaike_ringpilt {
+  object-fit: cover;
+  height: 55px;
+  width: 55px;
+  border-top-left-radius: 50% 50%;
+  border-top-right-radius: 50% 50%;
+  border-bottom-right-radius: 50% 50%;
+  border-bottom-left-radius: 50% 50%;
+}
+
+//transitions
+.slideInRight,
+.slideOutRight {
+  animation-duration: 0.4s;
+  -webkit-animation-duration: 0.4s;
+  -moz-animation-duration: 0.4s;
+  -o-animation-duration: 0.4s;
+}

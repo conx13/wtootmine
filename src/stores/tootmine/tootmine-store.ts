@@ -44,17 +44,17 @@ export const useTootmineStore = defineStore('tootmine', {
     //võtame baasist hetkel aktiivsed koos töödega
     async getHetkelTool() {
       this.loading = true;
-      this.aktiivsed = await getAktiivsed();
-      this.puudujad = await getPuudujad();
+      this.aktiivsed = await getAktiivsed(this.asukoht);
+      this.puudujad = await getPuudujad(this.asukoht);
       this.tanaList = await getAktGrupp(this.asukoht);
       this.loading = false;
     },
     //võtame baasist tööde grupid
     async getGrupp(grupp: string) {
       this.loading = true;
-      this.gruppTootajad = [];
+      //this.gruppTootajad = [];
       this.viimatiVaatasid = regViimatiVaatasin(grupp);
-      this.gruppTootajad = await getGruppTootajad(grupp);
+      this.gruppTootajad = await getGruppTootajad(grupp, this.asukoht);
 
       //this.uuedTood = muutunudElTood(this.gruppTootajad, grupp);
       this.loading = false;
@@ -69,30 +69,34 @@ export const useTootmineStore = defineStore('tootmine', {
 });
 
 //Nokime kõik aktiivsed baasist
-function getAktiivsed() {
-  const data = axios.get<Tulem[]>('api/rkood/tanatool/1').then((res) => {
-    if (res.data.length) {
-      return res.data[0];
-    } else {
-      return { tulem: 0 };
-    }
-  });
+function getAktiivsed(asukoht_id: number) {
+  const data = axios
+    .get<Tulem[]>(`api/rkood/tanatool/${asukoht_id}`)
+    .then((res) => {
+      if (res.data.length) {
+        return res.data[0];
+      } else {
+        return { tulem: 0 };
+      }
+    });
   return data;
 }
 
-//Nokime kõik puudujad baasist
-function getPuudujad() {
-  const data = axios.get<Tulem[]>('api/rkood/tanapoletool/1').then((res) => {
-    if (res.data.length) {
-      return res.data[0];
-    } else {
-      return { tulem: 0 };
-    }
-  });
+/* ---------------------- Nokime kõik puudujad baasist ---------------------- */
+function getPuudujad(asukoht_id: number) {
+  const data = axios
+    .get<Tulem[]>(`api/rkood/tanapoletool/${asukoht_id}`)
+    .then((res) => {
+      if (res.data.length) {
+        return res.data[0];
+      } else {
+        return { tulem: 0 };
+      }
+    });
   return data;
 }
 
-//Hetkel aktiivsed grupid
+/* ------------------------- Hetkel aktiivsed grupid ------------------------ */
 function getAktGrupp(asukoht_id: number) {
   try {
     const data = axios
@@ -110,23 +114,25 @@ function getAktGrupp(asukoht_id: number) {
   }
 }
 
-//Töötajad gruppide järgi
-function getGruppTootajad(grupp: string) {
+/* ------------------------- Töötajad gruppide järgi ------------------------ */
+function getGruppTootajad(grupp: string, asukoht_id: number) {
   try {
-    const data = axios.get(`/api/rkood/tanagrupp/${grupp}`).then((res) => {
-      if (res.data.length) {
-        return res.data;
-      } else {
-        return [];
-      }
-    });
+    const data = axios
+      .get(`/api/rkood/tanagrupp/${grupp}`, { params: { asukoht: asukoht_id } })
+      .then((res) => {
+        if (res.data.length) {
+          return res.data;
+        } else {
+          return [];
+        }
+      });
     return data;
   } catch (err) {
     console.log(err);
   }
 }
 
-//muutunud tööd
+/* ------------------------------ muutunud tööd ----------------------------- */
 function muutunudElTood(tood: gruppTootajad[], grupp: string) {
   sessionStorage.setItem(grupp + '_checkpoint', String(Date.now()));
   //tekitame listi töös olevates töödest

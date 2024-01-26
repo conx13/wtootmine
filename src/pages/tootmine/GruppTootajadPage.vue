@@ -16,12 +16,18 @@
           inline-label
         >
           <q-tab icon="groups" name="tootajad" label="Töötajad" />
-          <q-tab icon="construction" name="tood" label="Tööd" />
+          <!-- Kui on ainult 1 erinev töö, siis ei näita -->
+          <q-tab
+            v-if="gruppTood.length > 1"
+            icon="construction"
+            name="tood"
+            label="Tööd"
+          />
         </q-tabs>
       </div>
     </q-toolbar>
   </q-header>
-  <q-page padding>
+  <q-page>
     <div class="absolute-center" v-show="loading">
       <q-spinner color="primary" size="3em" />
     </div>
@@ -45,13 +51,13 @@
           </q-tab-panel>
           <q-tab-panel name="tood" class="no-padding">
             <too-tegijad-card
+              v-for="item in gruppTood"
+              :key="item.TID"
               :jid="item.JID"
               :too="item.TOO"
               :start="item.START"
               :viimati-vaatasid="viimatiVaatasid"
               :lepnr="item.LEPNR"
-              v-for="item in gruppTood"
-              :key="item.TID"
               :tootaja-grupp="item"
             />
           </q-tab-panel>
@@ -69,7 +75,6 @@ import { storeToRefs } from 'pinia';
 import { useTootmineStore } from '../../stores/tootmine/tootmine-store';
 import TootmineGruppCard from '../../components/tootmine/TootmineGruppCard.vue';
 import tooTegijadCard from '../../components/tootmine/tooTegijadCard.vue';
-import { start } from 'repl';
 
 const route = useRoute();
 
@@ -83,7 +88,11 @@ onMounted(() => {
   if (sessionStorage.getItem(String(route.params.grupp))) {
     tab.value = String(sessionStorage.getItem(String(route.params.grupp)));
   }
-  tootStore.getGrupp(String(route.params.grupp));
+  console.info(gruppTootajad.value.length, 'GruppTootjad mounted');
+  //juhul kui grupp on stores olemas, siis rohkem ei küsi
+  if (!gruppTootajad.value.length && !loading.value) {
+    tootStore.getGrupp(String(route.params.grupp));
+  }
 });
 
 //Kirjutame ajlukku aktiivse tabi

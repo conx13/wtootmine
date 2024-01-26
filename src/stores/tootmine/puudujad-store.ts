@@ -7,6 +7,7 @@ export const usePuudujadStore = defineStore('puudujad', {
     puudujad: [] as Tootaja[],
     puudujaGrupid: [] as string[],
     grupiNimi: '',
+    asukoht_id: 1,
     loading: false,
     lehtLaetud: false,
   }),
@@ -37,7 +38,7 @@ export const usePuudujadStore = defineStore('puudujad', {
     // Võtame baasist puudujate listi
     async getPuudujad() {
       this.loading = true;
-      this.puudujad = await puudujadBaasist();
+      this.puudujad = await puudujadBaasist(this.asukoht_id);
       this.loading = false;
     },
     //filtreerime puudujad grupi järgi välja
@@ -47,15 +48,17 @@ export const usePuudujadStore = defineStore('puudujad', {
   },
 });
 
-function puudujadBaasist() {
+function puudujadBaasist(asukoht_id: number) {
   try {
-    const data = axios.get('api/rkood/tanapolelist/1').then((res) => {
-      if (res.data.length) {
-        return res.data;
-      } else {
-        return [];
-      }
-    });
+    const data = axios
+      .get(`api/rkood/tanapolelist/${asukoht_id}`)
+      .then((res) => {
+        if (res.data.length) {
+          return res.data;
+        } else {
+          return [];
+        }
+      });
     return data;
   } catch (error) {
     console.log(error);
