@@ -25,10 +25,13 @@
               no-caps
               class="shadow-5"
               color="grey-1"
-              @click="test"
+              @click="pildiDialog = true"
             >
+              <q-avatar v-if="piltLoading" size="130px" class="">
+                <q-spinner-hourglass color="secondary" />
+              </q-avatar>
               <q-avatar
-                v-if="!kasutaja?.pilt"
+                v-else-if="!kasutaja?.pilt"
                 size="130px"
                 text-color="grey-5"
                 icon="person"
@@ -38,7 +41,15 @@
                   ratio="1"
                   :src="`/api/pics/${kasutaja.pilt}`"
                   spinner-color="white"
-                ></q-img> </q-avatar
+                >
+                </q-img>
+                <q-btn
+                  rounded
+                  outline
+                  icon="edit"
+                  color="green"
+                  style="bottom: -0px; right: -70px"
+                /> </q-avatar
             ></q-btn>
           </div>
           <div class="row justify-center">
@@ -61,8 +72,12 @@
             <div class="col-6" style="font-size: 1.1rem">
               <q-select
                 :options="asukohaValik"
+                :loading="asukohtLoading"
+                :readonly="kasutaja?.roll === 'admin'"
                 v-model="model"
-                borderless
+                @update:model-value="updateAsukoht"
+                rounded
+                outlined
                 hide-bottom-space
                 behavior="menu"
                 dense
@@ -71,8 +86,13 @@
             </div>
           </div>
           <q-separator inset class="q-mb-md" />
-          <rida rea-tekst="Roll" :rea-data="kasutaja?.roll" />
           <rida
+            v-if="kasutaja.roll === 'admin'"
+            rea-tekst="Roll"
+            :rea-data="kasutaja?.roll"
+          />
+          <rida
+            v-if="kasutaja.todate"
             rea-tekst="Aktiivne"
             :rea-data="date.formatDate(kasutaja?.todate, 'DD/MM/YYYY')"
           />
@@ -80,14 +100,35 @@
       </div>
     </div>
     <q-dialog v-model="pildiDialog">
-      <q-card class="my-card">
-        <q-uploader
-          :url="`api/users/editpic/${kasutaja.id}`"
-          field-name="pilt"
-          flat
-          accept=".jpg, image/*"
-          @failed="piltFailed"
-        />
+      <q-card class="my-card" style="width: 250px" bordered>
+        <q-card-section class="bg-primary text-white text-center">
+          <div class="text-h6">Pilt?</div>
+        </q-card-section>
+        <q-card-section class="q-pa-xs">
+          <q-card-actions vertical>
+            <q-btn
+              rounded
+              outline
+              no-caps
+              label="Muudame/lisame pildi"
+              icon="cloud_upload"
+              color="primary"
+              @click="valiPilt"
+              v-close-popup
+            ></q-btn>
+            <q-separator inset spaced />
+            <q-btn
+              no-caps
+              rounded
+              outline
+              icon="delete"
+              label="Kustutame pildi"
+              color="negative"
+              @click="kustutaPilt"
+              v-close-popup
+            ></q-btn>
+          </q-card-actions>
+        </q-card-section>
       </q-card>
     </q-dialog>
   </q-page>
@@ -98,37 +139,50 @@ import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
 
 import { onMounted, ref } from 'vue';
-import { useTootajaStore } from '../../stores/kasutaja/kasutaja-store';
+import { useKasutajaStore } from 'src/stores/kasutaja/kasutaja-store';
 import pealkiri from '../../components/yld/headerComp.vue';
 import rida from '../../components/tootaja/ridaComp.vue';
 import { date } from 'quasar';
+import { Valikud } from 'src/models/kasutaja/kasutajaModel';
 
 const route = useRoute();
-const kasutajaStore = useTootajaStore();
-const { kasutaja, loading, asukohaValik, asukModel } =
-  storeToRefs(kasutajaStore);
+
+const kasutajaStore = useKasutajaStore();
+const {
+  kasutaja,
+  loading,
+  asukohaValik,
+  asukModel,
+  piltLoading,
+  asukohtLoading,
+} = storeToRefs(kasutajaStore);
 const pealkirjaVärv = 'positive';
 const pildiDialog = ref(false);
 
 const model = ref(asukModel);
 
-function piltFailed(err: unknown) {
-  console.log(err, 'ERROR');
+/* -------------------------- Kui muudame asukohta -------------------------- */
+function updateAsukoht(value: Valikud) {
+  kasutajaStore.muudaAsuk(value.value);
 }
-
-function test() {
+/* ------------------------------ Valime pildi ------------------------------ */
+function valiPilt() {
   document.getElementById('myFile')?.click();
 }
+
+/* ------- Jälgime, et kui tekib pilt siis laeme selle kohe serverisse ------ */
 function kuiTekkisPilt(e: Event) {
-  console.log((<HTMLInputElement>e.target)?.files?.[0]);
   const data = (<HTMLInputElement>e.target)?.files?.[0];
   if (data) {
     kasutajaStore.muudaPilt(data);
   }
 }
-
+/* ------------------------ Kustutame kasutaja pildi ------------------------ */
+function kustutaPilt() {
+  kasutajaStore.muudaPilt();
+}
 onMounted(() => {
   kasutajaStore.getAsukohad();
-  kasutajaStore.getKasutaja(Number(route.params.id));
+  kasutajaStore.getKasutaja(Number(route.params.id), true);
 });
 </script>

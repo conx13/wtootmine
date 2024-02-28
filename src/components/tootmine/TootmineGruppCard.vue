@@ -1,11 +1,14 @@
 <template>
   <div>
     <!-- <q-card class="my-card bg-grey-1" flat bordered> -->
-    <q-slide-item class="" right-color="warning" @right="onRight">
+    <!-- @right="onRight" -->
+    <q-slide-item class="" right-color="warning" :reset="test" @right="onRight">
       <!-- style="border-radius: 20px" -->
       <template v-slot:right>
-        <div class="row items-center">
-          Töö ootel <q-icon size="xl" right name="stop_circle" />
+        <div class="row full-width tems-center">
+          <div class="">
+            Töö ootel<q-icon size="xl" right name="pause_circle" />
+          </div>
         </div>
       </template>
       <!--       style="
@@ -73,11 +76,11 @@ import { date } from 'quasar';
 import { gruppTootajad } from '../../models/tootmine/tootmineModels';
 import { useTootajaStore } from 'src/stores/tootmine/tootaja-store';
 import { useRouter } from 'vue-router';
-import { PropType } from 'vue';
+import { PropType, ref } from 'vue';
 
 const router = useRouter();
 const tootajaStore = useTootajaStore();
-
+const test = ref(false);
 const props = defineProps({
   viimatiVaatasid: { type: Number, required: true },
   tootajaGrupp: {
@@ -85,13 +88,19 @@ const props = defineProps({
     required: true,
   },
 });
+const emit = defineEmits(['refresh']);
 //defineProps<{ tootajaGrupp: gruppTootajad; viimatiVaatasid: number }>();
-function onLeft({ reset }: { reset: () => void }) {
-  reset();
-}
-function onRight({ reset }: { reset: () => void }) {
+
+async function onRight({ reset }: { reset: () => void }) {
+  await tootajaStore.muudameLisameTootajaAega(
+    props.tootajaGrupp.TID,
+    props.tootajaGrupp.RID,
+    props.tootajaGrupp.START
+  );
+  emit('refresh');
   return reset();
 }
+
 function tootajaBaasist(tid: number) {
   tootajaStore.getTootaja(Number(tid));
   setTimeout(() => {

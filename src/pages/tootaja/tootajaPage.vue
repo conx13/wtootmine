@@ -55,6 +55,12 @@
           <rida rea-tekst="Töökoht" :rea-data="tootaja?.asukoht" />
 
           <q-separator inset class="q-my-md" />
+          <div
+            class="text-caption text-center text-positive"
+            :class="{ 'text-negative': txtVarv }"
+          >
+            {{ viimatiAktiivne(tootaja.viimatiAkt) }}
+          </div>
         </div>
       </div>
     </div>
@@ -64,7 +70,7 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 
 import { useTootajaStore } from 'src/stores/tootmine/tootaja-store';
 import rida from '../../components/tootaja/ridaComp.vue';
@@ -73,11 +79,30 @@ const route = useRoute();
 const router = useRouter();
 const tootajaStore = useTootajaStore();
 const { tootaja, loading } = storeToRefs(tootajaStore);
+const txtVarv = ref(false);
 
+/* ---------- Abivalem, mis kontrollib ka object on tyhi või mitte ---------- */
+function isEmptyObject(obj: object): boolean {
+  for (const key in obj) {
+    return false;
+  }
+  return true;
+}
+
+/* -- Et kui töötaja on olnud täna aktiivne siis ühte värvi ja muidu punane - */
+function viimatiAktiivne(va: number | null) {
+  if (va === 0) {
+    txtVarv.value = false;
+    return 'Töötaja oli/on täna aktiivne';
+  } else {
+    txtVarv.value = true;
+    return `Töötaja on olnud aktiivne ${va} päeva tagasi.`;
+  }
+}
+/* --------------------- //Kui laeme akna, siis täidame --------------------- */
 onMounted(() => {
   //Kontrollime kas juba on andmed stores olemas või andmed on tulemas
-  if (tootaja.value === null && !loading.value) {
-    console.log(loading.value, 'Tootaja loading value');
+  if (isEmptyObject(tootaja.value) && !loading.value) {
     tootajaStore.getTootaja(Number(route.params.id));
   }
 });

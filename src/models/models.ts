@@ -21,6 +21,18 @@ export interface Tootaja {
   asukoht: string;
   asukoht_id: number;
   Aktiivne: string;
+  viimatiAkt: number | null;
+  Tooalgus: string;
+  Toolopp: string;
+  Lalgus: string;
+  Llopp: string;
+}
+
+export interface TootajaAjad {
+  Lalgus: string;
+  Llopp: string;
+  Tooalgus: string;
+  Toolopp: string;
 }
 
 export const enum messValik {

@@ -3,21 +3,23 @@ import axios from 'axios';
 
 import { Kasutaja, Asukohad, Valikud } from 'src/models/kasutaja/kasutajaModel';
 
-export const useTootajaStore = defineStore('kasutaja', {
+export const useKasutajaStore = defineStore('kasutaja', {
   state: () => ({
     kasutaja: {} as Kasutaja,
     loading: false,
     asukohaValik: [] as Valikud[],
-    asukModel: {},
+    asukModel: {} as Valikud,
     piltLoading: false,
+    asukohtLoading: false,
   }),
 
   getters: {},
 
   actions: {
     /* ----------------------------- otsime kasutaja ---------------------------- */
-    async getKasutaja(id: number) {
-      this.loading = true;
+    async getKasutaja(id: number, kasLoading = false) {
+      // kui tahame taustal kasutajat värskendada ja loadingut ei taha näidata
+      this.loading = kasLoading;
       try {
         const data = await axios.get<Kasutaja[]>(`/api/kasutaja/${id}`);
         this.kasutaja = data.data[0];
@@ -26,7 +28,7 @@ export const useTootajaStore = defineStore('kasutaja', {
           value: data.data[0].asukoht_id,
         };
       } catch (err) {
-        console.log(err);
+        console.error(err);
       }
       this.loading = false;
     },
@@ -44,28 +46,41 @@ export const useTootajaStore = defineStore('kasutaja', {
           })
         );
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     },
-    async muudaPilt(pilt: File) {
+    /* ------------------------------- muuda pilti ------------------------------ */
+    //opt+x
+    async muudaPilt(pilt?: File) {
       const formData = new FormData();
-      console.log(pilt, 'PILT');
-
-      formData.append('pilt', pilt);
+      if (pilt) {
+        formData.append('pilt', pilt);
+      }
       this.piltLoading = true;
       try {
-        const data = await axios.post(
+        await axios.post(
           `/api/kasutaja/muudapilt/${this.kasutaja.id}`,
           formData,
           { headers: { 'Content-Type': 'multipart/form-data' } }
         );
-        console.log(data, 'Pilt tagasi');
-
-        await this.getKasutaja(this.kasutaja.id);
+        await this.getKasutaja(this.kasutaja.id, false);
       } catch (error) {
-        console.log(error);
+        console.error(error);
+        this.piltLoading = false;
       }
       this.piltLoading = false;
+    },
+    /* ------------------------ Muudame kasutaja asukohta ----------------------- */
+    async muudaAsuk(asukoht: number) {
+      this.asukohtLoading = true;
+      try {
+        await axios.put(`/api/kasutaja/edit/${this.kasutaja.id}`, {
+          asukoht_id: asukoht,
+        });
+      } catch (error) {
+        console.error(error);
+      }
+      this.asukohtLoading = false;
     },
   },
 });

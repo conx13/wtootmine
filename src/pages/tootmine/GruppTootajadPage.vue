@@ -42,6 +42,7 @@
         >
           <q-tab-panel name="tootajad" class="no-padding">
             <tootmine-grupp-card
+              @refresh="refresh"
               v-for="item in gruppTootajad"
               :key="item.TID"
               :tootaja-grupp="item"
@@ -94,6 +95,11 @@ onMounted(() => {
     tootStore.getGrupp(String(route.params.grupp));
   }
 });
+function refresh() {
+  console.log('REFRESH');
+
+  tootStore.getGrupp(String(route.params.grupp));
+}
 
 //Kirjutame ajlukku aktiivse tabi
 function aktiivneSakk() {

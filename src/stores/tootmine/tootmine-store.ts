@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
-import { date } from 'quasar';
+import { useAuthStore as authStore } from 'src/stores/auth-store';
 
 import {
   Tulem,
@@ -14,7 +14,6 @@ export const useTootmineStore = defineStore('tootmine', {
     puudujad: <Tulem>{ tulem: 0 },
     loading: false,
     tanaList: [] as toolGrupp[],
-    asukoht: 1,
     gruppTootajad: [] as gruppTootajad[],
     tooTegijad: [] as gruppTootajad[],
     uuedTood: [] as number[],
@@ -22,6 +21,9 @@ export const useTootmineStore = defineStore('tootmine', {
   }),
 
   getters: {
+    asukoht() {
+      return authStore().user?.asukoht_id || 0;
+    },
     tanaKokku(state) {
       return state.aktiivsed.tulem + state.puudujad.tulem;
     },
@@ -43,10 +45,11 @@ export const useTootmineStore = defineStore('tootmine', {
   actions: {
     //võtame baasist hetkel aktiivsed koos töödega
     async getHetkelTool() {
+      const asuk = this.asukoht;
       this.loading = true;
-      this.aktiivsed = await getAktiivsed(this.asukoht);
-      this.puudujad = await getPuudujad(this.asukoht);
-      this.tanaList = await getAktGrupp(this.asukoht);
+      this.aktiivsed = await getAktiivsed(asuk);
+      this.puudujad = await getPuudujad(asuk);
+      this.tanaList = await getAktGrupp(asuk);
       this.loading = false;
     },
     //võtame baasist tööde grupid

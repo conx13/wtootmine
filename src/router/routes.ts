@@ -11,12 +11,9 @@ async function regAuth(
   next: NavigationGuardNext
 ) {
   const auth = useAuthStore();
-  console.log('Ruuter kontrollib auth statust');
   if (await auth.authStatus()) {
-    console.log('Kasutaja on logitud');
     next();
   } else {
-    console.log('Kasutaja ei ole logitud sisse!');
     next({
       path: '/login',
       query: { redirect: to.fullPath },
@@ -34,6 +31,7 @@ const routes = [
         path: '',
         name: 'tootminePage',
         component: () => import('pages/tootmine/TootminePage.vue'),
+        beforeEnter: [regAuth],
         meta: { title: 'tootmine' },
       },
       {
@@ -48,7 +46,7 @@ const routes = [
         name: 'tootajadPage',
         meta: { title: 'töötajad' },
         component: () => import('pages/tootajad/tootajadPage.vue'),
-        //beforeEnter: [regAuth],
+        beforeEnter: [regAuth],
       },
       {
         path: '/puudujad',
@@ -63,7 +61,7 @@ const routes = [
         name: 'tootajaPage',
         meta: { title: 'Töötaja:' },
         component: () => import('pages/tootaja/tootajaPage.vue'),
-        //beforeEnter: [regAuth],
+        beforeEnter: [regAuth],
       },
       {
         path: '/kasutaja/:id',
