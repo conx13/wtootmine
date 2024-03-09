@@ -71,6 +71,9 @@ export const useKasutajaStore = defineStore('kasutaja', {
       this.piltLoading = false;
     },
     /* ------------------------ Muudame kasutaja asukohta ----------------------- */
+    /**
+     * @param {number} asukoht - kasutaja asukoht
+     */
     async muudaAsuk(asukoht: number) {
       this.asukohtLoading = true;
       try {

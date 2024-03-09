@@ -91,6 +91,7 @@ const props = defineProps({
 const emit = defineEmits(['refresh']);
 //defineProps<{ tootajaGrupp: gruppTootajad; viimatiVaatasid: number }>();
 
+// kui lükkame paremalt vasakule
 async function onRight({ reset }: { reset: () => void }) {
   await tootajaStore.muudameLisameTootajaAega(
     props.tootajaGrupp.TID,
@@ -100,7 +101,7 @@ async function onRight({ reset }: { reset: () => void }) {
   emit('refresh');
   return reset();
 }
-
+// võtame töötaja baasist ja saadame töötaja lehele
 function tootajaBaasist(tid: number) {
   tootajaStore.getTootaja(Number(tid));
   setTimeout(() => {

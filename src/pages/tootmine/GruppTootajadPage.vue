@@ -89,19 +89,18 @@ onMounted(() => {
   if (sessionStorage.getItem(String(route.params.grupp))) {
     tab.value = String(sessionStorage.getItem(String(route.params.grupp)));
   }
-  console.info(gruppTootajad.value.length, 'GruppTootjad mounted');
   //juhul kui grupp on stores olemas, siis rohkem ei küsi
   if (!gruppTootajad.value.length && !loading.value) {
     tootStore.getGrupp(String(route.params.grupp));
   }
 });
-function refresh() {
-  console.log('REFRESH');
 
+//teeme refreshi
+function refresh() {
   tootStore.getGrupp(String(route.params.grupp));
 }
 
-//Kirjutame ajlukku aktiivse tabi
+//Kirjutame ajalukku aktiivse tabi
 function aktiivneSakk() {
   sessionStorage.setItem(String(route.params.grupp), tab.value);
 }

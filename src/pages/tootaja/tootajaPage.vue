@@ -1,13 +1,10 @@
 <template>
-  <q-header bordered class="bg-white text-primary" reveal>
-    <q-toolbar>
-      <q-btn flat round dense icon="arrow_back_ios" @click="tagasi" />
-      <q-toolbar-title class="myribakood text-center text-black"
-        >*{{ tootaja?.IKOOD }}*</q-toolbar-title
-      >
-    </q-toolbar>
-  </q-header>
   <q-page padding>
+    <pealkiri
+      :pealkiri="`*${tootaja?.IKOOD}*`"
+      text-varv="black"
+      klass="myribakood"
+    />
     <div class="absolute-center" v-show="loading">
       <q-spinner color="primary" size="3em" />
     </div>
@@ -72,6 +69,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { onMounted, ref } from 'vue';
 
+import pealkiri from 'src/components/yld/headerComp.vue';
 import { useTootajaStore } from 'src/stores/tootmine/tootaja-store';
 import rida from '../../components/tootaja/ridaComp.vue';
 

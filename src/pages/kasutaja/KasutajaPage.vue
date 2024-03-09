@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <!-- content -->
-    <pealkiri pealkiri="Kasutaja:" :text-varv="pealkirjaVärv" />
+    <pealkiri pealkiri="Kasutaja" :text-varv="pealkirjaVärv" klass="" />
 
     <div class="absolute-center" v-if="loading">
       <q-spinner color="primary" size="3em" />
@@ -73,7 +73,7 @@
               <q-select
                 :options="asukohaValik"
                 :loading="asukohtLoading"
-                :readonly="kasutaja?.roll === 'admin'"
+                :readonly="kasutaja?.roll !== 'admin'"
                 v-model="model"
                 @update:model-value="updateAsukoht"
                 rounded
