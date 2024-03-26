@@ -52,7 +52,7 @@ const routes = [
         path: '/puudujad',
         name: 'puudujadPage',
         meta: { title: 'mitteaktiivsed' },
-        //beforeEnter: [regAuth],
+        beforeEnter: [regAuth],
         // Soovitati väikese api puhul "otse laadiist mitte ette laadimist"
         component: () => import('pages/puudujad/puudujadPage.vue'),
       },

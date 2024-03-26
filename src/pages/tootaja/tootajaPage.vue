@@ -92,10 +92,12 @@ function viimatiAktiivne(va: number | null) {
   if (va === 0) {
     txtVarv.value = false;
     return 'Töötaja oli/on täna aktiivne';
-  } else {
+  } else if (va === 1) {
     txtVarv.value = true;
-    return `Töötaja on olnud aktiivne ${va} päeva tagasi.`;
+    return `Töötaja oli aktiivne ${va} päev tagasi.`;
   }
+  txtVarv.value = true;
+  return `Töötaja oli aktiivne ${va} päeva tagasi.`;
 }
 /* --------------------- //Kui laeme akna, siis täidame --------------------- */
 onMounted(() => {

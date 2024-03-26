@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
+import { useAuthStore as authStore, useAuthStore } from 'src/stores/auth-store';
+
 import { Tootaja } from 'src/models/models';
 
 export const usePuudujadStore = defineStore('puudujad', {
@@ -13,12 +15,24 @@ export const usePuudujadStore = defineStore('puudujad', {
   }),
 
   getters: {
+    //võtame kasutaja küljest asukoha
+    asukoht() {
+      return authStore().user?.asukoht_id || 0;
+    },
     //Tekitame puudujate töö grupid
     puudujadTooGrupid(state) {
-      const unique = [
-        ...new Set(state.puudujad.map((item) => item.toogrupp_nimi)),
-      ];
-      return unique;
+      //kui ei ole midagi valitud, siis grupp
+      if (state.grupiNimi === '') {
+        const unique = [
+          ...new Set(state.puudujad.map((item) => item.toogrupp_nimi)),
+        ];
+        return unique;
+      } else {
+        //kui on valitud siis ainult valik
+        const items = [];
+        items.push(state.grupiNimi);
+        return items;
+      }
     },
     //Filtreerime puudujaid
     puudujadFilter(state): Tootaja[] {
@@ -37,8 +51,10 @@ export const usePuudujadStore = defineStore('puudujad', {
   actions: {
     // Võtame baasist puudujate listi
     async getPuudujad() {
+      console.log('Võtame puudujad');
+
       this.loading = true;
-      this.puudujad = await puudujadBaasist(this.asukoht_id);
+      this.puudujad = await puudujadBaasist(this.asukoht);
       this.loading = false;
     },
     //filtreerime puudujad grupi järgi välja
@@ -48,6 +64,7 @@ export const usePuudujadStore = defineStore('puudujad', {
   },
 });
 
+/* ------------------------- Võtame baasist puudujad ------------------------ */
 function puudujadBaasist(asukoht_id: number) {
   try {
     const data = axios

@@ -3,10 +3,7 @@
     <!-- <q-ajax-bar ref="bar" color="blue" size="5px" /> -->
 
     <q-page-container>
-      <router-view v-slot="{ Component }">
-        <component :is="Component" />
-      </router-view>
-      <!-- <router-view /> -->
+      <router-view />
     </q-page-container>
     <q-footer bordered class="bg-white text-primary" reveal>
       <q-tabs

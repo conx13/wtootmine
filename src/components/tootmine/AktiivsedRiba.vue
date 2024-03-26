@@ -32,8 +32,8 @@
     </div>
     <q-separator vertical inset color="light-blue-2" />
     <div
+      class="col q-pt-sm q-pl-lg relative-position"
       v-ripple:negative
-      class="col q-pt-sm q-pl-lg"
       @click="$router.push({ name: 'puudujadPage' })"
     >
       <div class="text-h6 text-left text-grey-7">Mitteaktiivsed:</div>

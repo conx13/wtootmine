@@ -1,18 +1,21 @@
 <template>
-  <q-tabs>
-    <q-chip
-      size="lg"
-      icon="groups"
-      color="negative"
-      outline
-      v-for="item in puudujadTooGrupid"
-      :key="item"
-      clickable
-      :selected="item == grupiNimi"
-      @click="activeGrupp(item)"
-      >{{ item }}</q-chip
-    >
-  </q-tabs>
+  <div class="col q-px-sm">
+    <div class="flex no-wrap overflow-auto hide-scrollbar bg-white">
+      <q-chip
+        v-for="item in puudujadTooGrupid"
+        :key="item"
+        size="lg"
+        icon="groups"
+        color="negative"
+        outline
+        :removable="item == grupiNimi"
+        clickable
+        @click="activeGrupp(item)"
+        @remove="grupiNimi = ''"
+        >{{ item }}</q-chip
+      >
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -25,11 +28,9 @@ const { puudujadTooGrupid, grupiNimi } = storeToRefs(puudujadStore);
 //Teeme chipi aktiivseks
 function activeGrupp(nimi: string) {
   if (grupiNimi.value == nimi) {
-    puudujadStore.setPuudujadFilter('');
-    console.log('Puudujad tyhi');
+    grupiNimi.value = '';
   } else {
     puudujadStore.setPuudujadFilter(nimi);
-    console.log('Puudujad nimi');
   }
 }
 </script>
