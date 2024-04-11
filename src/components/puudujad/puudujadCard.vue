@@ -15,7 +15,7 @@
       </div>
       <img
         v-else
-        class="vaike_ringpilt"
+        class="ringpilt"
         style="border: 2px solid #c10015"
         :src="`/api/pics/${user.pilt}`"
       />

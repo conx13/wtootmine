@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { Kasutaja } from '../models/kasutaja/kasutajaModel';
 import { loginData } from '../models/models';
 import axios from 'axios';
+import { log } from 'console';
 
 export const useAuthStore = defineStore('auth', {
   state: () => {
@@ -27,19 +28,18 @@ export const useAuthStore = defineStore('auth', {
         .then((resp) => {
           this.setLoggingIn(resp.data.user);
         })
-        .catch(() => this.logError());
+        .catch((err) => {
+          this.logError();
+          throw new Error(err);
+        });
     },
 
     //Kontrollime kas kasutaja on ok ikka
     async authStatus(): Promise<boolean> {
-      console.log('Kontrollime auth statust');
-
       const tulem = await axios
         .get('api/auth/authstatus')
         .then((resp) => {
           this.setLoggingIn(resp.data.user);
-          console.log('on sisse logitud');
-
           return true;
         })
         .catch(() => {

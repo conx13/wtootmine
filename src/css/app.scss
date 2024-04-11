@@ -22,13 +22,13 @@
   border-radius: 50%;
   width: 55px;
   height: 55px;
-  line-height: 55px;
+  line-height: 53px;
   background: #fff;
   //color: #c10015;
   text-align: center;
   font-size: 28px;
 }
-.vaike_ringpilt {
+.ringpilt {
   object-fit: cover;
   height: 55px;
   width: 55px;
@@ -36,6 +36,25 @@
   border-top-right-radius: 50% 50%;
   border-bottom-right-radius: 50% 50%;
   border-bottom-left-radius: 50% 50%;
+}
+.vaike_ringpilt {
+  object-fit: cover;
+  height: 40px;
+  width: 40px;
+  border-top-left-radius: 50% 50%;
+  border-top-right-radius: 50% 50%;
+  border-bottom-right-radius: 50% 50%;
+  border-bottom-left-radius: 50% 50%;
+}
+.vaike_ring_text {
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  line-height: 38px;
+  background: #fff;
+  //color: #c10015;
+  text-align: center;
+  font-size: 20px;
 }
 
 //transitions

@@ -49,6 +49,14 @@ const routes = [
         beforeEnter: [regAuth],
       },
       {
+        path: '/otsi',
+        name: 'otsiPage',
+        meta: { title: 'Otsi koodi' },
+        component: () => import('src/pages/otsi/OtsiPage.vue'),
+        beforeEnter: [regAuth],
+      },
+
+      {
         path: '/puudujad',
         name: 'puudujadPage',
         meta: { title: 'mitteaktiivsed' },

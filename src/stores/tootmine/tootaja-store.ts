@@ -19,6 +19,8 @@ export const useTootajaStore = defineStore('tootaja', {
      * @tid - töötaja id
      */
     async getTootaja(tid: number) {
+      console.log('Grt tootaja');
+
       this.loading = true;
       try {
         const data = await axios.get<Tootaja[]>(`/api/users/user/${tid}`);

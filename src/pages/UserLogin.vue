@@ -100,8 +100,12 @@ function isValidEmail(email: string) {
 
 async function onLoginSubmit() {
   //loginForm.value?.validate();
-  await auth.login(logindata.value);
-  router.push((route.query.redirect as string) || '/');
+  try {
+    await auth.login(logindata.value);
+    router.push((route.query.redirect as string) || '/');
+  } catch (error) {
+    console.error(error, 'Miski login jama');
+  }
 }
 </script>
 ../models/models

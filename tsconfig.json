@@ -2,5 +2,6 @@
   "extends": "@quasar/app-vite/tsconfig-preset",
   "compilerOptions": {
     "baseUrl": "."
-  }
+  },
+  "typeRoots": ["./typings", "./node_modules/@types/"]
 }

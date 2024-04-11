@@ -96,6 +96,11 @@
             rea-tekst="Aktiivne"
             :rea-data="date.formatDate(kasutaja?.todate, 'DD/MM/YYYY')"
           />
+          <div class="col q-pt-xl text-center">
+            <q-btn outline rounded no-caps color="negative" @click="logout"
+              >Logi välja</q-btn
+            >
+          </div>
         </div>
       </div>
     </div>
@@ -156,10 +161,16 @@ const {
   piltLoading,
   asukohtLoading,
 } = storeToRefs(kasutajaStore);
+
+import { useAuthStore } from '../../stores/auth-store';
+const auth = useAuthStore();
+
 const pealkirjaVärv = 'positive';
 const pildiDialog = ref(false);
 
 const model = ref(asukModel);
+
+const logout = () => auth.logout();
 
 /* -------------------------- Kui muudame asukohta -------------------------- */
 function updateAsukoht(value: Valikud) {

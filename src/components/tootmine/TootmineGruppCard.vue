@@ -38,7 +38,7 @@
           </div>
           <img
             v-else
-            class="vaike_ringpilt"
+            class="ringpilt"
             style="border: 2px solid #bdbdbd"
             :src="`/api/pics/${tootajaGrupp.pilt}`"
           />

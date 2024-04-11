@@ -41,6 +41,7 @@ module.exports = configure(function (/* ctx */) {
       // 'eva-icons',
       // 'themify',
       'line-awesome',
+      'material-symbols-outlined',
       // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
 
       'roboto-font', // optional, you are not bound to it
@@ -80,7 +81,7 @@ module.exports = configure(function (/* ctx */) {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#devServer
     devServer: {
-      // https: true
+      https: true,
       open: {
         app: { name: 'google chrome' },
       },
@@ -88,7 +89,8 @@ module.exports = configure(function (/* ctx */) {
       proxy: {
         // with options
         '/api': {
-          target: 'http://localhost:3000/api',
+          target: 'https://localhost:3000/api',
+          secure: false, // Disable certificate verification (not recommended for production)
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
         },
@@ -120,7 +122,7 @@ module.exports = configure(function (/* ctx */) {
       // directives: [],
 
       // Quasar plugins
-      plugins: ['Notify', 'BottomSheet'],
+      plugins: ['Notify', 'BottomSheet', 'Dialog'],
     },
 
     // animations: 'all', // --- includes all animations

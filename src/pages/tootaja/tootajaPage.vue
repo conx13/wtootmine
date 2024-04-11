@@ -1,10 +1,6 @@
 <template>
   <q-page padding>
-    <pealkiri
-      :pealkiri="`*${tootaja?.IKOOD}*`"
-      text-varv="black"
-      klass="myribakood"
-    />
+    <pealkiri :pealkiri="`*${tootaja?.IKOOD}*`" klass="myribakood text-black" />
     <div class="absolute-center" v-show="loading">
       <q-spinner color="primary" size="3em" />
     </div>
@@ -102,6 +98,8 @@ function viimatiAktiivne(va: number | null) {
 /* --------------------- //Kui laeme akna, siis täidame --------------------- */
 onMounted(() => {
   //Kontrollime kas juba on andmed stores olemas või andmed on tulemas
+  console.log('töötaja on mounted');
+
   if (isEmptyObject(tootaja.value) && !loading.value) {
     tootajaStore.getTootaja(Number(route.params.id));
   }

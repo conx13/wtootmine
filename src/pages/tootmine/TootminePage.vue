@@ -9,7 +9,13 @@
             </q-toolbar-title>
           </div>
           <div class="col text-right">
-            <q-btn outline rounded no-caps padding="none">
+            <q-btn
+              outline
+              rounded
+              no-caps
+              padding="none"
+              :to="{ name: 'kasutajaPage', params: { id: user?.id } }"
+            >
               <!-- <div v-if="email" class="row items-center"> -->
 
               <q-avatar v-if="user?.pilt" size="30px" class="q-ma-xs"
@@ -28,13 +34,9 @@
                 class="q-ma-xs"
               />
               <!-- </div> -->
-              <q-menu content-class="bg-blue-grey-5 text-white">
+              <!-- <q-menu content-class="bg-blue-grey-5 text-white">
                 <q-list>
-                  <q-item
-                    clickable
-                    v-close-popup
-                    :to="{ name: 'kasutajaPage', params: { id: user?.id } }"
-                  >
+                  <q-item clickable v-close-popup>
                     <q-item-section>{{ email }}</q-item-section>
                     <q-item-section avatar>
                       <q-icon color="blue-grey-5" name="person"></q-icon>
@@ -47,7 +49,7 @@
                     </q-item-section>
                   </q-item>
                 </q-list>
-              </q-menu>
+              </q-menu> -->
             </q-btn>
           </div>
         </div>
@@ -78,18 +80,13 @@ import { useAuthStore } from '../../stores/auth-store';
 import { storeToRefs } from 'pinia';
 
 const tootStore = useTootmineStore();
-
-const auth = useAuthStore();
-const { email, user } = storeToRefs(useAuthStore());
+const { user } = storeToRefs(useAuthStore());
 
 onMounted(() => {
   tootStore.getHetkelTool();
   //getAktiivsedRibaData();
 });
 
-function logiValja() {
-  auth.logout();
-}
 async function refresh(done: () => void) {
   await tootStore.getHetkelTool();
   done();

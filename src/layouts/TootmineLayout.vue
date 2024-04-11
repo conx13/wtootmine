@@ -22,8 +22,8 @@
         <q-route-tab
           name="kasutaja"
           icon="manage_accounts"
-          label="Kasutaja"
-          :to="{ name: 'kasutajaPage', params: { id: user?.id } }"
+          label="Otsi"
+          :to="{ name: 'otsiPage' }"
         />
         <q-route-tab
           name="person"
@@ -49,3 +49,8 @@ const tab = ref('home');
 /* onMounted(() => {
 }); */
 </script>
+<style>
+.q-layout {
+  background-image: radial-gradient(circle, #f3f6f4, #ffffff);
+}
+</style>

@@ -3,8 +3,7 @@
     <q-page padding style="padding-top: 50px">
       <pealkiri
         :pealkiri="`Mitteaktiivsed:` + String(puudujadFilter.length)"
-        :text-varv="pealkirjaVärv"
-        klass=""
+        :klass="`text-${pealkirjaVärv}`"
       />
 
       <!-- content -->
@@ -78,10 +77,10 @@ function refresh(done: () => void) {
 }
 //Liigume töötaja kaardile
 function tootajaBaasist(tid: number) {
-  tootajaStore.getTootaja(Number(tid));
   setTimeout(() => {
     router.push({ name: 'tootajaPage', params: { id: tid } });
   }, 150);
+  tootajaStore.getTootaja(Number(tid));
 }
 
 //Kui on vaja midagi lisada listi või eemaldada

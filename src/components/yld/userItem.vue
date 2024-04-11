@@ -10,7 +10,7 @@
       </div>
       <img
         v-else
-        class="vaike_ringpilt"
+        class="ringpilt"
         :style="{ border: `2px solid ${ringiVarv}` }"
         :src="`/api/pics/${pilt}`"
       />
