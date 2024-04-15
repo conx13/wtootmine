@@ -14,8 +14,9 @@ export interface LeitudTegijad {
   JID: number;
   kpv: string;
   nimi: string;
-  PNIMI: string;
-  ENIMI: string;
+  tahed: string;
+  start: string;
+  stop: string;
   pilt: string;
   TID: number;
 }

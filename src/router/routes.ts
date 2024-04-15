@@ -11,6 +11,8 @@ async function regAuth(
   next: NavigationGuardNext
 ) {
   const auth = useAuthStore();
+  console.log(from, 'regAuth');
+
   if (await auth.authStatus()) {
     next();
   } else {
@@ -53,7 +55,7 @@ const routes = [
         name: 'otsiPage',
         meta: { title: 'Otsi koodi' },
         component: () => import('src/pages/otsi/OtsiPage.vue'),
-        beforeEnter: [regAuth],
+        // beforeEnter: [regAuth],
       },
 
       {

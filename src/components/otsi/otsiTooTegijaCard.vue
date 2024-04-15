@@ -1,8 +1,5 @@
 <template>
   <q-card
-    v-for="(tegijad, index) in groupedByKpv"
-    :key="index"
-    v-show="otsinguStaatus === '1'"
     flat
     bordered
     class="q-mt-md"
@@ -19,7 +16,7 @@
         class="text-center q-pb-none text-positive"
         style="font-size: 1rem"
       >
-        {{ index }}
+        {{ kpv }}
       </q-item-label>
       <q-item v-for="leitudNimed in tegijad" :key="leitudNimed.TID">
         <q-item-section avatar>
@@ -28,7 +25,7 @@
             class="ring_text text-grey-7"
             :style="{ border: `2px solid #bdbdbd` }"
           >
-            {{ leitudNimed.PNIMI[0] }}{{ leitudNimed.ENIMI[0] }}
+            {{ leitudNimed.tahed }}
           </div>
           <img
             v-else
@@ -41,11 +38,13 @@
           ><q-item-label
             class="text-h5 text-weight-regular"
             style="font-size: 18px"
-            >{{ leitudNimed.PNIMI }} {{ leitudNimed.ENIMI }}</q-item-label
+            >{{ leitudNimed.nimi }}</q-item-label
           >
         </q-item-section>
         <q-item-section side>
-          <q-item-label caption>08:00-12:30</q-item-label>
+          <q-item-label caption
+            >{{ leitudNimed.start }}-{{ leitudNimed.stop }}
+          </q-item-label>
         </q-item-section>
         <!-- Siia tuleb expansion item -->
       </q-item>
@@ -54,4 +53,12 @@
   </q-card>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { LeitudTegijad } from 'src/models/otsi/otsiModels';
+import { PropType } from 'vue';
+
+defineProps({
+  kpv: { type: String, required: true },
+  tegijad: { type: Array as PropType<LeitudTegijad[]>, required: true },
+});
+</script>

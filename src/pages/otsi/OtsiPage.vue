@@ -1,51 +1,34 @@
 <template>
-  <q-page padding style="padding-top: 65px">
+  <q-page padding style="padding-top: 195px">
     <pealkiri pealkiri="Otsi töökoodi" />
-    <!-- content -->
     <div v-if="naita" class="col">
       <StreamBarcodeReader @decode="(a: string) => onDecode(a)" />
     </div>
-    <!-- Kui me otsime: -->
+    <!-- Kui me otsime tööd: -->
     <div class="absolute-center" v-show="loading">
       <q-spinner color="primary" size="3em" />
     </div>
 
     <!-- Kui me ei leidnud midagi: -->
     <transition name="fade">
-      <q-card
-        v-if="otsinguStaatus === '0'"
-        flat
-        bordered
-        class="q-mt-xs"
-        style="
-          border-radius: 20px;
-          border-color: red;
-          border-style: solid;
-          border-width: 1px;
-        "
-      >
-        <q-card-section
-          class="text-negative text-center"
-          style="font-size: 18px"
-        >
-          Sellise koodiga tööd ei leidnud!
-        </q-card-section>
-      </q-card>
+      <otsiEiLeidnudCard v-if="otsinguStaatus === '0'" />
     </transition>
     <!-- Kui me otsime tegijaid -->
     <div class="col text-center" v-show="kesTegiLoading">
       <q-spinner-dots color="primary" size="3em" />
     </div>
+
     <!-- leitud tegijate kaart -->
-    <div
-      v-for="(tegijad, index) in groupedByKpv"
-      :key="index"
-      v-show="otsinguStaatus === '1'"
-    >
-      {{ tegijad }}
+    <div v-show="otsinguStaatus === '1'">
+      <otsiTooTegijaCard
+        v-for="(tegijad, index) in groupedByKpv"
+        :key="index"
+        :tegijad="tegijad"
+        :kpv="index.toString()"
+      />
     </div>
 
-    <!-- barcode aken -->
+    <!-- scanneri otsimise nupp -->
     <q-page-sticky position="bottom">
       <q-btn
         class="q-mb-md"
@@ -57,36 +40,24 @@
         @click="naita = !naita"
       />
     </q-page-sticky>
+
     <!-- Otsingu riba -->
-    <q-page-sticky expand position="top">
-      <q-toolbar class="">
-        <div class="col">
-          <q-form @submit="otsiEnter()">
-            <q-input
-              class="bg-white"
-              ref="otsi_input"
-              rounded
-              outlined
-              type="number"
-              enterKeyHint="search"
-              placeholder="Otsi töökoodi:"
-              input-style="font-size: 20px"
-              v-model="otsiText"
-            >
-              <template v-slot:prepend>
-                <q-icon name="search" />
-              </template>
-              <template v-if="otsiText" v-slot:append>
-                <q-icon
-                  size="30px"
-                  name="close"
-                  @click.stop.prevent="otsiText = ''"
-                ></q-icon>
-              </template>
-            </q-input>
-          </q-form>
-        </div>
-      </q-toolbar>
+    <q-page-sticky
+      expand
+      position="top"
+      class="bg-white q-pb-sm"
+      style="
+        border: 1px solid #eaeaea;
+        border-radius: 0 0 20px 20px;
+        border-top: none;
+        overflow: hidden;
+      "
+    >
+      <!-- Otsimise texti riba -->
+      <otsiInputRida
+        :otsiText="otsiText"
+        @update:otsiTex="otsiEnter"
+      ></otsiInputRida>
       <!-- Leitud töö kaart -->
       <div v-if="otsinguStaatus == '1'" class="row full-width">
         <otsiLeitudTooCard
@@ -109,6 +80,9 @@ import { useOtsiStore } from 'src/stores/otsi/otsi-store';
 
 import pealkiri from '../../components/yld/headerComp.vue';
 import otsiLeitudTooCard from 'src/components/otsi/otsiLeitudTooCard.vue';
+import otsiTooTegijaCard from 'src/components/otsi/otsiTooTegijaCard.vue';
+import otsiEiLeidnudCard from 'src/components/otsi/otsiEiLeidnudCard.vue';
+import otsiInputRida from 'src/components/otsi/otsiInputRida.vue';
 
 import { storeToRefs } from 'pinia';
 
@@ -128,20 +102,19 @@ const naita = ref(false);
 
 const visible = ref(true);
 
-const otsi_input = ref();
-const koodiEiLeitud = ref(false);
-
 //kui tuvastame ribakoodi
 function onDecode(a: string) {
+  //panem leitud koodi otsingu teksti
   otsiText.value = a;
   naita.value = false;
+  //otsime koodi
   otsiKoodiTegijat();
 }
 
-//kui vajutame otsingus enterit
-const otsiEnter = async () => {
-  // võtame otsingult fookuse ära
-  otsi_input.value.blur();
+//kui vajutame otsingus enterit siis otsime koodi
+const otsiEnter = async (tulemus: string) => {
+  console.log(tulemus, 'ENTER tulemus');
+  otsiText.value = tulemus;
   visible.value = false;
   otsiKoodiTegijat();
 };
@@ -155,14 +128,6 @@ const otsiKoodiTegijat = async () => {
   if (otsinguStaatus.value == '1') {
     await otsiKesTegi(leitudTood.value[0].JID);
   }
-};
-
-const otsiTegijaid = (jid: number) => {
-  visible.value = !visible.value;
-  if (visible.value) {
-    otsiKesTegi(jid);
-  }
-  console.log('Kes tegi test 2');
 };
 </script>
 <style>
