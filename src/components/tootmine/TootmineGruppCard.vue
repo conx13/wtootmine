@@ -93,11 +93,11 @@ const emit = defineEmits(['refresh']);
 
 // kui lükkame paremalt vasakule
 async function onRight({ reset }: { reset: () => void }) {
-  await tootajaStore.muudameLisameTootajaAega(
+  /*   await tootajaStore.muudameLisameTootajaAega(
     props.tootajaGrupp.TID,
     props.tootajaGrupp.RID,
     props.tootajaGrupp.START
-  );
+  ); */
   emit('refresh');
   return reset();
 }

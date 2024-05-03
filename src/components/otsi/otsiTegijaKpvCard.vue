@@ -2,7 +2,7 @@
   <q-card
     flat
     bordered
-    class="q-mt-md"
+    class="q-mt-sm"
     style="
       border-radius: 20px;
       border-color: lightblue;
@@ -10,27 +10,30 @@
       border-width: 1px;
     "
   >
-    <q-card-section class="q-px-xs q-pt-none">
+    <q-card-section class="q-px-xs q-pt-none q-pb-xs">
       <q-item-label
         header
-        class="text-center q-pb-none text-positive"
+        class="text-center q-pb-none q-pt-xs text-positive"
         style="font-size: 1rem"
       >
         {{ kpv }}
       </q-item-label>
-      <q-item v-for="leitudNimed in tegijad" :key="leitudNimed.TID">
+      <q-item
+        class="q-pa-xs"
+        v-for="leitudNimed in tegijad"
+        :key="leitudNimed.TID"
+      >
         <q-item-section avatar>
           <div
             v-if="!leitudNimed.pilt"
-            class="ring_text text-grey-7"
-            :style="{ border: `2px solid #bdbdbd` }"
+            class="vaike_ring_text text-grey-7"
+            style="border: 1px solid #bdbdbd"
           >
             {{ leitudNimed.tahed }}
           </div>
           <img
             v-else
-            class="vaike_ringpilt"
-            :style="{ border: `2px solid #bdbdbd` }"
+            class="vaike_ringpilt shadow-2"
             :src="`/api/pics/${leitudNimed.pilt}`"
           />
         </q-item-section>

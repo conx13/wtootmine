@@ -5,9 +5,15 @@
     <q-page-container>
       <router-view />
     </q-page-container>
-    <q-footer bordered class="bg-white text-primary" reveal>
+    <q-footer
+      class="bg-white text-primary q-mx-sm q-mb-md shadow-1"
+      reveal
+      reveal-offset="100"
+      style="border: 1px solid #eaeaea; border-radius: 50px; overflow: hidden"
+    >
       <q-tabs
         no-caps
+        dense
         active-color="primary"
         indicator-color="transparent"
         class="text-grey"

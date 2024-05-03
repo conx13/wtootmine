@@ -8,29 +8,41 @@ import { error } from 'console';
 export const useOtsiStore = defineStore('otsi', () => {
   const otsiText = ref('');
   const otsinguStaatus = ref('');
-  const leitudTood = ref<LeitudTood[]>([]);
+  const leitudTood = ref({} as LeitudTood);
   const leitudTegijad = ref([] as LeitudTegijad[]);
-  const groupedByKpv = ref({} as { [key: string]: LeitudTegijad[] });
+  //const groupedByKpv = ref({} as { [key: string]: LeitudTegijad[] });
+  //const uniqTegijad = ref([] as LeitudTegijad[]);
 
   const loading = ref(false);
   const kesTegiLoading = ref(false);
 
   //getters
-  //const doubleCount = computed(() => count.value * 2) //getters asemel
-  const leitudTegiajadNimed = computed(() => {
+  /* ------------------------ Leiame kordumatud tegijad ----------------------- */
+  const uniqTegijad = computed(() => {
     return [
       ...new Map(
-        leitudTegijad.value.map((item) => [item['TID'], item])
+        leitudTegijad.value.map((item) => [item['nimi'], item])
       ).values(),
     ];
   });
+  /* ------------------ Gruppeerime leitud töötajad kpv järgi ----------------- */
+  const groupedByKpv = computed(() => {
+    return leitudTegijad.value.reduce((acc, curr) => {
+      const kpv = curr.kpv;
+      if (!acc[kpv]) {
+        acc[kpv] = [];
+      }
+      acc[kpv].push(curr);
+      return acc;
+    }, {} as { [key: string]: LeitudTegijad[] });
+  });
 
   const nulliKoik = () => {
+    leitudTood.value = {} as LeitudTood;
     leitudTegijad.value = [];
-    leitudTood.value = [];
-    groupedByKpv.value = {};
   };
   //actions
+  /* ------------------------- Leiame koodi järgi töö ------------------------- */
   const otsiKoodi = async () => {
     try {
       loading.value = true;
@@ -40,8 +52,8 @@ export const useOtsiStore = defineStore('otsi', () => {
         .get<LeitudTood[]>('api/rkood/otsiRibakoodiUus', { params })
         .then((res) => {
           if (res.data.length) {
+            leitudTood.value = res.data[0];
             otsinguStaatus.value = '1';
-            leitudTood.value = res.data;
           } else otsinguStaatus.value = '0';
         });
     } catch (err) {
@@ -50,24 +62,16 @@ export const useOtsiStore = defineStore('otsi', () => {
       loading.value = false;
     }
   };
-
+  /* ------------------------ Leiame kes tegi seda tööd ----------------------- */
   const otsiKesTegi = async (JID: number) => {
     leitudTegijad.value = [];
+    kesTegiLoading.value = true;
     try {
-      kesTegiLoading.value = true;
       await axios
         .get<LeitudTegijad[]>(`api/rkood/kestegiUus/${JID}`)
         .then((res) => {
           if (res.data.length) {
             leitudTegijad.value = res.data;
-            groupedByKpv.value = leitudTegijad.value.reduce((acc, curr) => {
-              const kpv = curr.kpv;
-              if (!acc[kpv]) {
-                acc[kpv] = [];
-              }
-              acc[kpv].push(curr);
-              return acc;
-            }, {} as { [key: string]: LeitudTegijad[] });
           }
         });
     } catch (err) {
@@ -78,19 +82,14 @@ export const useOtsiStore = defineStore('otsi', () => {
     }
   };
 
-  const filterTegija = (tid: number) => {
-    return leitudTegiajadNimed.value.filter((obj) => obj.TID === tid);
-  };
-
   return {
     otsiText,
     otsiKoodi,
     leitudTood,
     otsiKesTegi,
     leitudTegijad,
-    leitudTegiajadNimed,
-    filterTegija,
     groupedByKpv,
+    uniqTegijad,
     nulliKoik,
     loading,
     kesTegiLoading,

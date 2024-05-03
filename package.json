@@ -18,6 +18,8 @@
     "pinia": "^2.0.11",
     "quasar": "^2.6.0",
     "vue": "^3.0.0",
+    "vue-barcode-reader": "conx13/vue-barcode-reader",
+    "vue-quaggajs": "^1.0.12",
     "vue-router": "^4.0.0"
   },
   "devDependencies": {
@@ -30,9 +32,9 @@
     "eslint": "^8.10.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-vue": "^9.0.0",
+    "html5-qrcode": "^2.3.8",
     "prettier": "^2.5.1",
     "typescript": "^4.5.4",
-    "vue-barcode-reader": "^1.0.3",
     "workbox-build": "^6.5.0",
     "workbox-cacheable-response": "^6.5.0",
     "workbox-core": "^6.5.0",

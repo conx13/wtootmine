@@ -4,37 +4,16 @@ Kõigepealt server - server % nodemon server
 
 Siis proged/webprojekt/wtootmine quasar d
 
-A Quasar Project
+# Kui kasutame vue-barcode-reader-it:
 
-## Install the dependencies
+Kui kasutame vue-barcode-reader-it:
+barcode update, tuleb minna pakki sisse ja seal muuta:
+proged/wtootmine/node_modules/vue-barcode-reader/package.json
 
-```bash
-yarn
-# or
-npm install
-```
-
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
-
-```bash
-quasar dev
-```
-
-### Lint the files
-
-```bash
-yarn lint
-# or
-npm run lint
-```
-
-### Format the files
-
-```bash
-yarn format
-# or
-npm run format
-```
+"dependencies": {
+"@zxing/library": "^0.20.0"
+},
+ja siis npm update
 
 ### Build the app for production
 

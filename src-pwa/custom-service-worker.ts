@@ -32,3 +32,9 @@ if (process.env.MODE !== 'ssr' || process.env.PROD) {
     )
   );
 }
+
+// Caching strategies
+/* registerRoute(
+  ({ url }) => url.href.startsWith('https'),
+  new StaleWhileRevalidate({cacheName: 'MY-CACHE',})
+); */

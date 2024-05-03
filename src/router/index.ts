@@ -1,10 +1,14 @@
 import { route } from 'quasar/wrappers';
 import {
+  NavigationGuardNext,
+  RouteLocationNormalized,
   createMemoryHistory,
   createRouter,
   createWebHashHistory,
   createWebHistory,
 } from 'vue-router';
+
+import { Loading } from 'quasar';
 
 import routes from './routes';
 
@@ -32,6 +36,15 @@ export default route(function (/* { store, ssrContext } */) {
     // quasar.conf.js -> build -> vueRouterMode
     // quasar.conf.js -> build -> publicPath
     history: createHistory(process.env.VUE_ROUTER_BASE),
+  });
+
+  Router.beforeEach((to, from, next) => {
+    Loading.show();
+    next();
+  });
+
+  Router.afterEach(() => {
+    Loading.hide();
   });
 
   return Router;

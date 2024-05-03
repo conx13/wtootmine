@@ -1,17 +1,17 @@
 <template>
-  <q-item clickable v-ripple class="q-px-xs" @click="vajutasNuppu(`${tid}`)">
+  <q-item clickable v-ripple class="bg-white" @click="vajutasNuppu(`${tid}`)">
     <q-item-section avatar>
       <div
         v-if="!pilt"
-        class="ring_text text-grey-7"
-        :style="{ border: `2px solid ${ringiVarv}` }"
+        class="vaike_ring_text text-grey-7"
+        :style="{ border: `1px solid ${ringiVarv}` }"
       >
         {{ pnimi.charAt(0) }}{{ enimi.charAt(0) }}
       </div>
       <img
         v-else
-        class="ringpilt"
-        :style="{ border: `2px solid ${ringiVarv}` }"
+        class="vaike_ringpilt shadow-2"
+        :style="{ border: `1px solid ${ringiVarv}` }"
         :src="`/api/pics/${pilt}`"
       />
     </q-item-section>

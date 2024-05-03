@@ -1,8 +1,62 @@
 <template>
-  <q-page style="padding-top: 50px" padding>
+  <q-page padding>
+    <!-- <q-page style="padding-top: 65px" padding> -->
     <!-- content -->
-    <pealkiri pealkiri="Töötajad" text-varv="black" klass="" />
-
+    <!-- <pealkiri pealkiri="Töötajad" text-varv="black" klass="" /> -->
+    <q-header class="bg-white text-primary" reveal>
+      <q-toolbar
+        class="bg-white q-py-sm"
+        style="
+          border: 1px solid #eaeaea;
+          border-radius: 0 0 20px 20px;
+          border-top: none;
+          overflow: hidden;
+        "
+      >
+        <div class="col">
+          <q-btn flat round icon="arrow_back_ios" @click="$router.go(-1)" />
+        </div>
+        <div class="col-8">
+          <q-form @submit="otsi()">
+            <q-input
+              ref="select_input"
+              rounded
+              dense
+              type="text"
+              outlined
+              inputmode="text"
+              enterKeyHint="search"
+              v-model="otsiText"
+              placeholder="Otsi töötajat:"
+              input-style="font-size: 18px;"
+              :loading="loadingOtsi"
+            >
+              <template v-if="otsiText && !loadingOtsi" v-slot:append>
+                <q-icon
+                  name="cancel"
+                  @click.stop.prevent="otsiText = ''"
+                  class="cursor-pointer"
+                />
+              </template>
+              <template v-slot:prepend>
+                <q-icon name="person_search" />
+              </template>
+            </q-input>
+          </q-form>
+        </div>
+        <div class="col-3">
+          <q-toggle
+            v-model="kasAktiivsed"
+            false-value="0"
+            true-value="1"
+            label="Akt."
+          />
+        </div>
+      </q-toolbar>
+    </q-header>
+    <!--     <div class="absolute-center">
+      <q-img src="/src/assets/People.png" width="500px" />
+    </div> -->
     <div v-for="tootaja in tootajad" :key="tootaja.TID">
       <userItem
         :tid="tootaja.TID"
@@ -15,20 +69,28 @@
     </div>
 
     <!-- Kuna on sticki siis peab lõpus asuma -->
-    <q-page-sticky expand position="top">
-      <q-toolbar class="bg-white">
+    <!--  <q-page-sticky expand position="top">
+      <q-toolbar
+        class="bg-white q-pb-sm"
+        style="
+          border: 1px solid #eaeaea;
+          border-radius: 0 0 20px 20px;
+          border-top: none;
+          overflow: hidden;
+        "
+      >
         <div class="col-9">
           <q-form @submit="otsi()">
             <q-input
               ref="select_input"
               rounded
+              type="text"
               outlined
-              dense
               inputmode="text"
               enterKeyHint="search"
               v-model="otsiText"
               placeholder="Otsi töötajat:"
-              input-style="font-size: 18px;"
+              input-style="font-size: 20px;"
               :loading="loadingOtsi"
             >
               <template v-if="otsiText && !loadingOtsi" v-slot:append>
@@ -53,12 +115,12 @@
           />
         </div>
       </q-toolbar>
-    </q-page-sticky>
+    </q-page-sticky> -->
   </q-page>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import pealkiri from 'src/components/yld/headerComp.vue';
@@ -90,4 +152,22 @@ function tootajaBaasist(tid: number) {
     router.push({ name: 'tootajaPage', params: { id: tid } });
   }, 150);
 }
+
+/* ----------------------- Viime fookuse otsingu peale ---------------------- */
+const fookus = () =>
+  setTimeout(() => {
+    select_input.value.focus();
+  }, 0);
+
+/* ---------------------------------- Start --------------------------------- */
+onMounted(() => {
+  fookus();
+});
 </script>
+<style>
+.centered {
+  position: fixed; /* or absolute */
+  top: 50%;
+  left: 50%;
+}
+</style>

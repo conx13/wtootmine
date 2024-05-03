@@ -2,7 +2,7 @@
   <div class="row-inline q-ma-sm" v-for="item in tanaList" :key="item.JRK">
     <!-- <q-card class="bg-grey-1" flat bordered @click="gruppTootajad(item.GGRUPP)"> -->
     <q-item
-      class="q-pa-sm q-py-sd"
+      class="q-pa-sm q-py-sd bg-white"
       style="
         border-radius: 30px;
         border-color: lightblue;

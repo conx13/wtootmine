@@ -122,7 +122,7 @@ module.exports = configure(function (/* ctx */) {
       // directives: [],
 
       // Quasar plugins
-      plugins: ['Notify', 'BottomSheet', 'Dialog'],
+      plugins: ['Notify', 'BottomSheet', 'Dialog', 'Loading'],
     },
 
     // animations: 'all', // --- includes all animations
@@ -164,7 +164,9 @@ module.exports = configure(function (/* ctx */) {
 
     // https://v2.quasar.dev/quasar-cli-vite/developing-pwa/configuring-pwa
     pwa: {
-      workboxMode: 'generateSW', // or 'injectManifest'
+      //workboxMode: 'generateSW', // or 'injectManifest'
+      workboxMode: 'injectManifest',
+      workboxOptions: {},
       injectPwaMetaTags: true,
       swFilename: 'sw.js',
       manifestFilename: 'manifest.json',
