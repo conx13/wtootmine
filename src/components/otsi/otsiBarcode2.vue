@@ -1,6 +1,9 @@
 <template>
   {{ kaamerad }}
-  <StreamBarcodeReader @decode="(a: string, b:any) => onDecode(a, b)" />
+  <StreamBarcodeReader
+    deviceID="test"
+    @decode="(a: string, b:any) => onDecode(a, b)"
+  />
 </template>
 
 <script setup lang="ts">
@@ -20,7 +23,12 @@ onMounted(() => {
   navigator.mediaDevices.enumerateDevices().then((devices) => {
     kaamerad.value = devices.filter((i) => i.kind == 'videoinput');
     console.log(kaamerad.value, 'Kaamerad');
-    emit('kaamerad', kaamerad);
+    if (kaamerad.value.length) {
+      console.log(kaamerad.value, 'leidsin kaamerad');
+      emit('kaamerad', kaamerad);
+    } else {
+      console.log(kaamerad.value, 'ei leidnud kaameaid');
+    }
   });
 });
 
