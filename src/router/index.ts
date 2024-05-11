@@ -39,7 +39,9 @@ export default route(function (/* { store, ssrContext } */) {
   });
 
   Router.beforeEach((to, from, next) => {
-    Loading.show();
+    Loading.show({
+      delay: 400, // ms
+    });
     next();
   });
 

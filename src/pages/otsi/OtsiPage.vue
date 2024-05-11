@@ -1,18 +1,54 @@
 <template>
-  <q-page padding style="padding-top: 195px">
-    <pealkiri pealkiri="Otsi töökoodi" />
-    {{ onvalmis }}:kaamer ok {{ leitudError }}: error
+  <q-page padding style="padding-top: 145px">
+    <!-- <pealkiri pealkiri="Otsi töökoodi" /> -->
+    <q-header class="bg-white text-primary" reveal>
+      <q-toolbar
+        class="bg-white q-py-sm"
+        style="
+          border: 1px solid #eaeaea;
+          border-radius: 0 0 20px 20px;
+          border-top: none;
+          overflow: hidden;
+        "
+      >
+        <div class="col">
+          <q-btn flat round icon="arrow_back_ios" @click="$router.go(-1)" />
+        </div>
+        <div class="col-10">
+          <!-- Otsimise texti riba -->
+          <otsiInputRida :otsiText="otsiText" @update:otsiTex="otsiEnter" />
+        </div>
+        <div class="col">
+          <q-btn
+            flat
+            round
+            icon="sym_o_settings_photo_camera"
+            :disable="kaamerad.length == 0"
+          >
+            <q-menu
+              auto-close
+              transition-show="flip-right"
+              transition-hide="flip-left"
+            >
+              <q-list style="min-width: 100px">
+                <q-item
+                  clickable
+                  v-for="kaamera in kaamerad"
+                  :key="kaamera.deviceId"
+                  @click="valitudKaamera(kaamera.deviceId)"
+                >
+                  <q-item-section>{{ kaamera.label }}</q-item-section>
+                </q-item>
+              </q-list>
+            </q-menu>
+          </q-btn>
+        </div>
+      </q-toolbar>
+    </q-header>
+
     <!-- {{ kaamerad }}:Kaamerad -->
-    <!--     <otsiBarcode
-      v-if="naita"
-      :qrbox="300"
-      :fps="10"
-      :camera="valitudKaamera"
-      @result="onDecode"
-      @cameras="test"
-    ></otsiBarcode> -->
     <div v-if="naita">
-      <otsiBarcode2 @leitud-kood="onDecode" />
+      <otsiBarcode2 @leitud-kood="onDecode" @kaamerad="kaamerateList" />
     </div>
     <!-- Kui me otsime tööd: -->
     <div class="absolute-center" v-show="loading">
@@ -28,7 +64,13 @@
       <q-spinner-dots color="primary" size="3em" />
     </div>
 
-    <q-tab-panels v-if="kasOnTegijaid" v-model="aktiivneTab" animated>
+    <q-tab-panels
+      v-if="kasOnTegijaid"
+      swipeable
+      infinite
+      v-model="aktiivneTab"
+      animated
+    >
       <q-tab-panel name="kes" class="no-padding">
         <otsiTegijaCard :tegijad="uniqTegijad"> </otsiTegijaCard>
       </q-tab-panel>
@@ -45,24 +87,8 @@
 
     <!-- scanneri otsimise nupp -->
     <q-page-sticky position="bottom">
-      <q-fab
-        class="q-mb-md"
-        color="amber"
-        text-color="black"
-        :icon="!naita ? 'sym_o_barcode_scanner' : 'sym_o_close'"
-        direction="up"
-      >
-        <q-fab-action
-          v-for="kaamera in kaamerad"
-          :key="kaamera.id"
-          color="amber"
-          text-color="black"
-          :label="kaamera.label"
-          @click="valitudKaamera = kaamera.id"
-        />
-      </q-fab>
       <q-btn
-        class="q-mb-xl"
+        class="q-mb-lg"
         :color="naita ? 'negative' : 'primary'"
         round
         push
@@ -74,6 +100,7 @@
 
     <!-- Otsingu riba -->
     <q-page-sticky
+      v-if="otsinguStaatus == '1' && !naita"
       expand
       position="top"
       class="bg-white q-pb-sm"
@@ -85,9 +112,9 @@
       "
     >
       <!-- Otsimise texti riba -->
-      <otsiInputRida :otsiText="otsiText" @update:otsiTex="otsiEnter" />
+      <!-- <otsiInputRida :otsiText="otsiText" @update:otsiTex="otsiEnter" /> -->
       <!-- Leitud töö kaart -->
-      <div v-if="otsinguStaatus == '1' && !naita" class="row full-width">
+      <div class="row full-width">
         <otsiLeitudTooCard
           :lepnr="leitudTood.LEPNR"
           :gnimi="leitudTood.GNIMI"
@@ -104,21 +131,15 @@
 //import { StreamBarcodeReader } from '@teckel/vue-barcode-reader';
 
 import { computed, ref } from 'vue';
+import { storeToRefs } from 'pinia';
+import otsiBarcode2 from 'src/components/otsi/otsiBarcode2.vue';
 
 import { useOtsiStore } from 'src/stores/otsi/otsi-store';
-
-import pealkiri from '../../components/yld/headerComp.vue';
 import otsiLeitudTooCard from 'src/components/otsi/otsiLeitudTooCard.vue';
 import otsiTegijaKpvCard from 'src/components/otsi/otsiTegijaKpvCard.vue';
 import otsiTegijaCard from 'src/components/otsi/otsiTegijaCard.vue';
 import otsiEiLeidnudCard from 'src/components/otsi/otsiEiLeidnudCard.vue';
 import otsiInputRida from 'src/components/otsi/otsiInputRida.vue';
-
-import { CameraDevice, Html5Qrcode } from 'html5-qrcode';
-//import otsiBarcode from 'src/components/otsi/otsiBarcode.vue';
-import otsiBarcode2 from 'src/components/otsi/otsiBarcode2.vue';
-
-import { storeToRefs } from 'pinia';
 
 const otsiStore = useOtsiStore();
 const {
@@ -132,16 +153,9 @@ const {
 } = storeToRefs(otsiStore);
 const { otsiKoodi, otsiKesTegi, nulliKoik } = otsiStore;
 
-const leitud = ref();
-const onvalmis = ref(false);
-const leitudError = ref();
+const kaamerad = ref([] as MediaDeviceInfo[]);
 
-const kaamerad = ref([] as CameraDevice[]);
-const valitudKaamera = ref();
-
-const test = (nimed: any) => {
-  kaamerad.value = nimed;
-};
+//const valitudKaamera = ref();
 
 //kas näitame ribokoodi akent
 const naita = ref(false);
@@ -151,6 +165,10 @@ const aktiivneTab = ref('kes');
 const poleTöösseVõetud = computed(
   () => leitudTood.value.onresult == 0 && leitudTood.value.ontoos == 0
 );
+const isMediaStreamAPISupported =
+  navigator &&
+  navigator.mediaDevices &&
+  'enumerateDevices' in navigator.mediaDevices;
 
 //Kas leitud tööl on tegijaid
 const kasOnTegijaid = computed(
@@ -185,20 +203,17 @@ const otsiKoodiTegijat = async () => {
     await otsiKesTegi(leitudTood.value.JID);
   }
 };
-const otsiKaamerad = async () => {
-  if (!kaamerad.value[0]) {
-    console.log('Korjan kaamerad');
 
-    Html5Qrcode.getCameras().then((devices) => {
-      if (devices) {
-        kaamerad.value = devices;
-      }
-    });
+const kaamerateList = (leitudKaamerad: MediaDeviceInfo[]) => {
+  kaamerad.value = leitudKaamerad;
+  console.log(kaamerad, 'leitud kaamerad');
+};
+
+const valitudKaamera = (cameraId: string) => {
+  if (cameraId) {
+    localStorage.setItem('cameraid', cameraId);
   }
 };
-const onValmis = () => (onvalmis.value = true);
-
-const onError = (err: any) => (leitudError.value = err);
 </script>
 <style>
 .allaNool {

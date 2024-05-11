@@ -1,5 +1,5 @@
 <template>
-  {{ props.camera }}:Kaamera
+  {{ camera }}:Kaamera
   <div id="reader"></div>
 </template>
 

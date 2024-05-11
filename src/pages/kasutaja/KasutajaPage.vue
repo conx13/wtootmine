@@ -25,8 +25,10 @@
               no-caps
               class="shadow-5"
               color="grey-1"
-              @click="pildiDialog = true"
+              @click="pildiValik"
             >
+              <!-- @click="pildiValik" -->
+              <!-- @click="pildiDialog = true" -->
               <q-avatar v-if="piltLoading" size="130px" class="">
                 <q-spinner-hourglass color="secondary" />
               </q-avatar>
@@ -96,7 +98,7 @@
             rea-tekst="Aktiivne"
             :rea-data="date.formatDate(kasutaja?.todate, 'DD/MM/YYYY')"
           />
-          <div class="col q-pt-xl text-center">
+          <div class="col full-width text-center absolute" style="bottom: 30px">
             <q-btn outline rounded no-caps color="negative" @click="logout"
               >Logi välja</q-btn
             >
@@ -104,11 +106,11 @@
         </div>
       </div>
     </div>
-    <q-dialog v-model="pildiDialog">
+    <q-dialog v-model="pildiDialog" position="bottom">
       <q-card class="my-card" style="width: 250px" bordered>
-        <q-card-section class="bg-primary text-white text-center">
-          <div class="text-h6">Pilt?</div>
-        </q-card-section>
+        <!--         <q-card-section class="bg-primary text-white text-center">
+            <div class="text-h6">Pilt?</div>
+          </q-card-section> -->
         <q-card-section class="q-pa-xs">
           <q-card-actions vertical>
             <q-btn
@@ -147,10 +149,11 @@ import { onMounted, ref } from 'vue';
 import { useKasutajaStore } from 'src/stores/kasutaja/kasutaja-store';
 import pealkiri from '../../components/yld/headerComp.vue';
 import rida from '../../components/tootaja/ridaComp.vue';
-import { date } from 'quasar';
+import { date, useQuasar } from 'quasar';
 import { Valikud } from 'src/models/kasutaja/kasutajaModel';
 
 const route = useRoute();
+const $q = useQuasar();
 
 const kasutajaStore = useKasutajaStore();
 const {
@@ -167,6 +170,7 @@ const auth = useAuthStore();
 
 const pealkirjaVärv = 'positive';
 const pildiDialog = ref(false);
+const pildiBottomSheet = ref(false);
 
 const model = ref(asukModel);
 
@@ -192,6 +196,29 @@ function kuiTekkisPilt(e: Event) {
 function kustutaPilt() {
   kasutajaStore.muudaPilt();
 }
+
+const pildiValik = () => {
+  $q.bottomSheet({
+    message: 'Muuda/lisa pilt!',
+    grid: false,
+    actions: [
+      {
+        classes: 'text-primary',
+        label: 'Laeme uue pildi',
+        icon: 'add_a_photo',
+        id: 'new',
+      },
+      {
+        classes: 'text-red',
+        label: 'Kustutame pildi',
+        icon: 'delete',
+        id: 'delete',
+      },
+    ],
+  }).onOk((act) => {
+    console.log(act.id, 'valitud akction');
+  });
+};
 onMounted(() => {
   kasutajaStore.getAsukohad();
   kasutajaStore.getKasutaja(Number(route.params.id), true);

@@ -33,7 +33,8 @@
             >
               <template v-if="otsiText && !loadingOtsi" v-slot:append>
                 <q-icon
-                  name="cancel"
+                  size="30px"
+                  name="close"
                   @click.stop.prevent="otsiText = ''"
                   class="cursor-pointer"
                 />
