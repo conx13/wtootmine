@@ -4,40 +4,35 @@
 
     <q-page-container>
       <router-view />
+      <q-footer class="bg-white" reveal elevated>
+        <q-tabs
+          no-caps
+          active-color="primary"
+          indicator-color="transparent"
+          class="text-grey-9 q-pb-sm"
+          v-model="tab"
+        >
+          <q-route-tab
+            name="tootmine"
+            icon="home"
+            label="Tootmine"
+            :to="{ name: 'tootminePage' }"
+          />
+          <q-route-tab
+            name="person"
+            icon="group"
+            label="Töötajad"
+            :to="{ name: 'tootajadPage' }"
+          />
+          <q-route-tab
+            name="kasutaja"
+            :icon="symOutlinedBarcodeScanner"
+            label="Otsi koodi"
+            :to="{ name: 'otsiPage' }"
+          />
+        </q-tabs>
+      </q-footer>
     </q-page-container>
-    <q-footer
-      class="bg-white text-primary q-mx-sm q-mb-md shadow-1"
-      reveal
-      style="border: 1px solid #eaeaea; border-radius: 50px; overflow: hidden"
-    >
-      <q-tabs
-        no-caps
-        dense
-        active-color="primary"
-        indicator-color="transparent"
-        class="text-grey"
-        v-model="tab"
-      >
-        <q-route-tab
-          name="tootmine"
-          icon="home"
-          label="Tootmine"
-          :to="{ name: 'tootminePage' }"
-        />
-        <q-route-tab
-          name="kasutaja"
-          icon="manage_accounts"
-          label="Otsi"
-          :to="{ name: 'otsiPage' }"
-        />
-        <q-route-tab
-          name="person"
-          icon="group"
-          label="Töötajad"
-          :to="{ name: 'tootajadPage' }"
-        />
-      </q-tabs>
-    </q-footer>
   </q-layout>
 </template>
 
@@ -45,6 +40,7 @@
 import { ref } from 'vue';
 import { useAuthStore } from 'src/stores/auth-store';
 import { storeToRefs } from 'pinia';
+import { symOutlinedBarcodeScanner } from '@quasar/extras/material-symbols-outlined';
 
 const auth = useAuthStore();
 const { loggedIn, user } = storeToRefs(auth);

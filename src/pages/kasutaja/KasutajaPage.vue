@@ -19,40 +19,52 @@
       <div class="row justify-center">
         <div class="col-xs-12 col-lg-3">
           <div class="row justify-center">
-            <q-btn
-              outline
-              round
-              no-caps
-              class="shadow-5"
-              color="grey-1"
-              @click="pildiValik"
-            >
+            <q-btn outline round no-caps class="shadow-5" color="grey-1">
               <!-- @click="pildiValik" -->
               <!-- @click="pildiDialog = true" -->
-              <q-avatar v-if="piltLoading" size="130px" class="">
+              <!-- pildi muutmise menüü -->
+              <q-menu :offset="[60, 10]" auto-close>
+                <q-item clickable v-ripple @click="valiPilt">
+                  <q-item-section style="font-size: 1.1rem">
+                    Muudame/lisame pildi
+                  </q-item-section>
+                  <q-item-section avatar>
+                    <q-icon :name="symOutlinedAddAPhoto" />
+                  </q-item-section>
+                </q-item>
+                <q-separator />
+                <q-item clickable v-ripple @click="kustutaPilt">
+                  <q-item-section style="font-size: 1.1rem"
+                    >Kustutame pildi</q-item-section
+                  >
+                  <q-item-section avatar>
+                    <q-icon color="negative" :name="symOutlinedNoPhotography" />
+                  </q-item-section>
+                </q-item>
+              </q-menu>
+              <q-avatar v-if="piltLoading" size="130px">
                 <q-spinner-hourglass color="secondary" />
               </q-avatar>
+
+              <!-- Kui pilti ei ole: -->
               <q-avatar
                 v-else-if="!kasutaja?.pilt"
                 size="130px"
                 text-color="grey-5"
                 icon="person"
-                class="q-ma-xs" />
+                class="q-ma-xs"
+              />
+
+              <!-- Kui on pilt siis näitame -->
               <q-avatar v-else size="130px" class="q-ma-xs">
                 <q-img
                   ratio="1"
-                  :src="`/api/pics/${kasutaja.pilt}`"
+                  :src="`/api/kasutaja/pics/${kasutaja.pilt}`"
                   spinner-color="white"
                 >
                 </q-img>
-                <q-btn
-                  rounded
-                  outline
-                  icon="edit"
-                  color="green"
-                  style="bottom: -0px; right: -70px"
-                /> </q-avatar
-            ></q-btn>
+              </q-avatar>
+            </q-btn>
           </div>
           <div class="row justify-center">
             <div class="text-h4 q-py-md">
@@ -87,6 +99,7 @@
               ></q-select>
             </div>
           </div>
+
           <q-separator inset class="q-mb-md" />
           <rida
             v-if="kasutaja.roll === 'admin'"
@@ -106,38 +119,6 @@
         </div>
       </div>
     </div>
-    <q-dialog v-model="pildiDialog" position="bottom">
-      <q-card class="my-card" style="width: 250px" bordered>
-        <!--         <q-card-section class="bg-primary text-white text-center">
-            <div class="text-h6">Pilt?</div>
-          </q-card-section> -->
-        <q-card-section class="q-pa-xs">
-          <q-card-actions vertical>
-            <q-btn
-              rounded
-              outline
-              no-caps
-              label="Muudame/lisame pildi"
-              icon="cloud_upload"
-              color="primary"
-              @click="valiPilt"
-              v-close-popup
-            ></q-btn>
-            <q-separator inset spaced />
-            <q-btn
-              no-caps
-              rounded
-              outline
-              icon="delete"
-              label="Kustutame pildi"
-              color="negative"
-              @click="kustutaPilt"
-              v-close-popup
-            ></q-btn>
-          </q-card-actions>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
   </q-page>
 </template>
 
@@ -146,14 +127,17 @@ import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
 
 import { onMounted, ref } from 'vue';
+
+import { symOutlinedAddAPhoto } from '@quasar/extras/material-symbols-outlined';
+import { symOutlinedNoPhotography } from '@quasar/extras/material-symbols-outlined';
+
 import { useKasutajaStore } from 'src/stores/kasutaja/kasutaja-store';
 import pealkiri from '../../components/yld/headerComp.vue';
 import rida from '../../components/tootaja/ridaComp.vue';
-import { date, useQuasar } from 'quasar';
+import { date } from 'quasar';
 import { Valikud } from 'src/models/kasutaja/kasutajaModel';
 
 const route = useRoute();
-const $q = useQuasar();
 
 const kasutajaStore = useKasutajaStore();
 const {
@@ -169,8 +153,6 @@ import { useAuthStore } from '../../stores/auth-store';
 const auth = useAuthStore();
 
 const pealkirjaVärv = 'positive';
-const pildiDialog = ref(false);
-const pildiBottomSheet = ref(false);
 
 const model = ref(asukModel);
 
@@ -194,31 +176,9 @@ function kuiTekkisPilt(e: Event) {
 }
 /* ------------------------ Kustutame kasutaja pildi ------------------------ */
 function kustutaPilt() {
-  kasutajaStore.muudaPilt();
+  kasutajaStore.kustutaPilt(kasutaja.value.pilt);
 }
 
-const pildiValik = () => {
-  $q.bottomSheet({
-    message: 'Muuda/lisa pilt!',
-    grid: false,
-    actions: [
-      {
-        classes: 'text-primary',
-        label: 'Laeme uue pildi',
-        icon: 'add_a_photo',
-        id: 'new',
-      },
-      {
-        classes: 'text-red',
-        label: 'Kustutame pildi',
-        icon: 'delete',
-        id: 'delete',
-      },
-    ],
-  }).onOk((act) => {
-    console.log(act.id, 'valitud akction');
-  });
-};
 onMounted(() => {
   kasutajaStore.getAsukohad();
   kasutajaStore.getKasutaja(Number(route.params.id), true);

@@ -54,7 +54,7 @@
           <q-tab
             name="millal"
             label="Millal tehti"
-            icon="sym_o_calendar_clock"
+            :icon="symOutlinedCalendarClock"
           />
         </q-tabs>
       </q-card-section>
@@ -64,7 +64,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { symOutlinedCalendarClock } from '@quasar/extras/material-symbols-outlined';
 
 defineProps({
   lepnr: { type: String, required: true },

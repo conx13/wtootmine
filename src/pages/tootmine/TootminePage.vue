@@ -23,7 +23,7 @@
                   spinner-color="white"
                   ratio="1"
                   loading="eager"
-                  :src="`/api/pics/${user?.pilt}`"
+                  :src="`/api/kasutaja/pics/${user?.pilt}`"
               /></q-avatar>
               <q-avatar
                 v-else

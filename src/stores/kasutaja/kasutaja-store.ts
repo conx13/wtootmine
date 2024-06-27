@@ -58,11 +58,9 @@ export const useKasutajaStore = defineStore('kasutaja', {
       }
       this.piltLoading = true;
       try {
-        await axios.post(
-          `/api/kasutaja/muudapilt/${this.kasutaja.id}`,
-          formData,
-          { headers: { 'Content-Type': 'multipart/form-data' } }
-        );
+        await axios.post(`/api/kasutaja/pilt/${this.kasutaja.id}`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
         await this.getKasutaja(this.kasutaja.id, false);
       } catch (error) {
         console.error(error);
@@ -77,13 +75,35 @@ export const useKasutajaStore = defineStore('kasutaja', {
     async muudaAsuk(asukoht: number) {
       this.asukohtLoading = true;
       try {
-        await axios.put(`/api/kasutaja/edit/${this.kasutaja.id}`, {
+        await axios.put(`/api/kasutaja/${this.kasutaja.id}`, {
           asukoht_id: asukoht,
         });
       } catch (error) {
         console.error(error);
       }
       this.asukohtLoading = false;
+    },
+
+    /* -------------------------------------------------------------------------- */
+    /*                          Kustutame kasutaja pildi                          */
+    /* -------------------------------------------------------------------------- */
+    /**
+     * @param {string} pildiNimi - kustutame tid-ga pildi
+     */
+    async kustutaPilt(pildiNimi: string) {
+      if (pildiNimi) {
+        this.piltLoading = true;
+        try {
+          await axios.delete(`/api/kasutaja/pilt/${this.kasutaja.id}`, {
+            params: { pilt: pildiNimi },
+          });
+          this.kasutaja.pilt = '';
+        } catch (err) {
+          console.log(err);
+        } finally {
+          this.piltLoading = false;
+        }
+      }
     },
   },
 });

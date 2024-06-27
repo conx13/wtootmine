@@ -15,6 +15,7 @@ export const useOtsiStore = defineStore('otsi', () => {
 
   const loading = ref(false);
   const kesTegiLoading = ref(false);
+  const foundCameras = ref([] as MediaDeviceInfo[]);
 
   //getters
   /* ------------------------ Leiame kordumatud tegijad ----------------------- */
@@ -36,7 +37,7 @@ export const useOtsiStore = defineStore('otsi', () => {
       return acc;
     }, {} as { [key: string]: LeitudTegijad[] });
   });
-
+  /* ------------------- Nullime eelmised otsingu tulemused ------------------- */
   const nulliKoik = () => {
     leitudTood.value = {} as LeitudTood;
     leitudTegijad.value = [];
@@ -94,5 +95,6 @@ export const useOtsiStore = defineStore('otsi', () => {
     loading,
     kesTegiLoading,
     otsinguStaatus,
+    foundCameras,
   };
 });

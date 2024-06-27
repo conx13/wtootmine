@@ -1,11 +1,8 @@
 <template>
-  {{ onLoading }} Barcode camera app loaded {{ barcodeapploaded }} Barcode
-  camera loaded
   <StreamBarcodeReader
     v-if="onLoading"
     :deviceID="valitudKaamera"
-    @decode="(a: string, b:any) => onDecode(a, b)"
-    @loaded="loadedCamera"
+    @decode="(code: string) => onDecode(code)"
   />
 </template>
 
@@ -17,7 +14,6 @@ const emit = defineEmits(['leitudKood', 'kaamerad']);
 const kaamerad = ref([] as MediaDeviceInfo[]);
 const valitudKaamera = ref();
 const onLoading = ref(false);
-const barcodeapploaded = ref(false);
 
 /* --------------------- Võtame kui on mälust kaamera ID -------------------- */
 onMounted(() => {
@@ -25,12 +21,12 @@ onMounted(() => {
     valitudKaamera.value = localStorage.getItem('cameraid');
   }
   onLoading.value = true;
+  loadedCamera();
 });
 
 /* ------------ Kui kaamera töötab, korjame kaamerate listi kokku ----------- */
-const loadedCamera = () => {
-  barcodeapploaded.value = true;
-  navigator.mediaDevices.enumerateDevices().then((devices) => {
+const loadedCamera = async () => {
+  await navigator.mediaDevices.enumerateDevices().then((devices) => {
     kaamerad.value = devices.filter((i) => i.kind == 'videoinput');
     if (kaamerad.value.length) {
       emit('kaamerad', kaamerad.value);
@@ -39,8 +35,7 @@ const loadedCamera = () => {
 };
 
 /* ------------------------- kui tuvastame ribakoodi ------------------------ */
-async function onDecode(a: string, b: any) {
-  console.log(a, 'leitud kood');
-  emit('leitudKood', a);
+async function onDecode(code: string) {
+  emit('leitudKood', code);
 }
 </script>

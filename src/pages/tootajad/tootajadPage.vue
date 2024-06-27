@@ -68,55 +68,6 @@
         @vajutasNuppu="tootajaBaasist"
       />
     </div>
-
-    <!-- Kuna on sticki siis peab lõpus asuma -->
-    <!--  <q-page-sticky expand position="top">
-      <q-toolbar
-        class="bg-white q-pb-sm"
-        style="
-          border: 1px solid #eaeaea;
-          border-radius: 0 0 20px 20px;
-          border-top: none;
-          overflow: hidden;
-        "
-      >
-        <div class="col-9">
-          <q-form @submit="otsi()">
-            <q-input
-              ref="select_input"
-              rounded
-              type="text"
-              outlined
-              inputmode="text"
-              enterKeyHint="search"
-              v-model="otsiText"
-              placeholder="Otsi töötajat:"
-              input-style="font-size: 20px;"
-              :loading="loadingOtsi"
-            >
-              <template v-if="otsiText && !loadingOtsi" v-slot:append>
-                <q-icon
-                  name="cancel"
-                  @click.stop.prevent="otsiText = ''"
-                  class="cursor-pointer"
-                />
-              </template>
-              <template v-slot:prepend>
-                <q-icon name="person_search" />
-              </template>
-            </q-input>
-          </q-form>
-        </div>
-        <div class="col">
-          <q-toggle
-            v-model="kasAktiivsed"
-            false-value="0"
-            true-value="1"
-            label="Akt."
-          />
-        </div>
-      </q-toolbar>
-    </q-page-sticky> -->
   </q-page>
 </template>
 

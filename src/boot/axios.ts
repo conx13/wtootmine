@@ -55,8 +55,8 @@ axios.interceptors.response.use(
     Notify.create({
       type: 'negative',
       caption: 'ERROR',
-      message: 'Error!!!',
-      // message: err.response.data.message || err.response.data,
+      //message: 'Error!!!',
+      message: err.response.data.message || err.response.data,
       actions: [{ icon: 'close', color: 'white' }],
     });
     return Promise.reject(err);

@@ -10,12 +10,12 @@
       enterKeyHint="search"
       placeholder="Otsi töökoodi:"
       input-style="font-size: 18px"
-      v-model="otsiTextRida"
+      v-model="otsiText"
     >
       <template v-slot:prepend>
         <q-icon name="search" />
       </template>
-      <template v-if="otsiTextRida" v-slot:append>
+      <template v-if="otsiText" v-slot:append>
         <q-icon
           size="30px"
           name="close"
@@ -27,36 +27,24 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { ref } from 'vue';
 
-const props = defineProps({
-  otsiText: String,
-});
-const emit = defineEmits(['update:otsiTex']);
+const otsiText = defineModel<string>();
+const emit = defineEmits(['enter']);
 
 //määrame input välja
 const otsi_input = ref();
-//tekitame sisese model-i
-const otsiTextRida = ref('');
 
-//Jälge, et kui kood muutub, siis muudame ka otsingu texti
-watch(
-  computed(() => props.otsiText),
-  (newValue) => {
-    if (newValue?.length) {
-      otsiTextRida.value = newValue; // Access and assign the current value
-    }
-  }
-);
 //kustutame rea ja alustame uuesti
 const kustutaOtsing = () => {
-  otsiTextRida.value = '';
+  otsiText.value = '';
   otsi_input.value.focus();
 };
-//kui vajutasime enterit, siis viime texti edasi
+
+//kui vajutasime enterit, siis viime texti tagasi
 const otsiEnter = () => {
   otsi_input.value.blur();
-  emit('update:otsiTex', otsiTextRida.value);
+  emit('enter', otsiText.value);
 };
 // @click.stop.prevent="otsiText = ''"
 </script>
