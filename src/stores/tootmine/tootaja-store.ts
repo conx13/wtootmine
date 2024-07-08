@@ -11,6 +11,7 @@ export const useTootajaStore = defineStore('tootaja', {
     tootaja: {} as Tootaja,
     loading: false,
     tootjaAjad: [] as TootajaAjad[],
+    piltLoading: false,
   }),
 
   actions: {
@@ -19,8 +20,6 @@ export const useTootajaStore = defineStore('tootaja', {
      * @tid - töötaja id
      */
     async getTootaja(tid: number) {
-      console.log('Grt tootaja');
-
       this.loading = true;
       try {
         const data = await axios.get<Tootaja[]>(`/api/users/user/${tid}`);
@@ -51,6 +50,48 @@ export const useTootajaStore = defineStore('tootaja', {
         console.error(error);
       }
     },
+    /* -------------------------- Muudame töötaja pilti ------------------------- */
+    /**
+     * @param {File} pilt - töötja pildi fail
+     */
+    async muudaPilt(pilt?: File) {
+      const formData = new FormData();
+      if (pilt) {
+        formData.append('pilt', pilt);
+      }
+      this.piltLoading = true;
+      try {
+        await axios.post(`/api/users/editpic/${this.tootaja.TID}`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        await this.getTootaja(this.tootaja.TID);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        this.piltLoading = false;
+      }
+    },
+
+    /* ------------------------- Kustutame töötaja pildi ------------------------ */
+    /**
+     * @param {string} pildiNimi - pildi nimi serveris
+     */
+    async kustutaPilt(pildiNimi: string) {
+      if (pildiNimi) {
+        this.piltLoading = true;
+        try {
+          await axios.delete(`/api/users/delpic/${this.tootaja.TID}`, {
+            params: { pilt: pildiNimi },
+          });
+          this.tootaja.pilt = '';
+        } catch (err) {
+          console.log(err);
+        } finally {
+          this.piltLoading = false;
+        }
+      }
+    },
+
     /* ------------------ Lõpetame aktiivse töö tööootele vastu ----------------- */
     /*
     @tid -töötaja ID

@@ -57,6 +57,7 @@ axios.interceptors.response.use(
       caption: 'ERROR',
       //message: 'Error!!!',
       message: err.response.data.message || err.response.data,
+      html: true,
       actions: [{ icon: 'close', color: 'white' }],
     });
     return Promise.reject(err);

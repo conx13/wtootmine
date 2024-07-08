@@ -2,15 +2,14 @@
   <q-page padding>
     <!-- content -->
     <pealkiri pealkiri="Kasutaja" :text-varv="pealkirjaVärv" klass="" />
-
     <div class="absolute-center" v-if="loading">
       <q-spinner color="primary" size="3em" />
     </div>
-    <!-- none -->
     <div v-else>
+      <!-- pildi üleslaadimise väli, peidetud -->
       <input
         type="file"
-        accept=".jpg, .png, .jpeg|image/*"
+        accept=".jpg, .png, .jpeg, image/*"
         name="pilt"
         id="myFile"
         @change="kuiTekkisPilt"
@@ -20,40 +19,20 @@
         <div class="col-xs-12 col-lg-3">
           <div class="row justify-center">
             <q-btn outline round no-caps class="shadow-5" color="grey-1">
-              <!-- @click="pildiValik" -->
-              <!-- @click="pildiDialog = true" -->
-              <!-- pildi muutmise menüü -->
-              <q-menu :offset="[60, 10]" auto-close>
-                <q-item clickable v-ripple @click="valiPilt">
-                  <q-item-section style="font-size: 1.1rem">
-                    Muudame/lisame pildi
-                  </q-item-section>
-                  <q-item-section avatar>
-                    <q-icon :name="symOutlinedAddAPhoto" />
-                  </q-item-section>
-                </q-item>
-                <q-separator />
-                <q-item clickable v-ripple @click="kustutaPilt">
-                  <q-item-section style="font-size: 1.1rem"
-                    >Kustutame pildi</q-item-section
-                  >
-                  <q-item-section avatar>
-                    <q-icon color="negative" :name="symOutlinedNoPhotography" />
-                  </q-item-section>
-                </q-item>
-              </q-menu>
+              <!-- Kui laeme serverist pilti -->
               <q-avatar v-if="piltLoading" size="130px">
                 <q-spinner-hourglass color="secondary" />
               </q-avatar>
 
               <!-- Kui pilti ei ole: -->
               <q-avatar
-                v-else-if="!kasutaja?.pilt"
+                v-else-if="!kasOnPilt"
                 size="130px"
                 text-color="grey-5"
                 icon="person"
                 class="q-ma-xs"
-              />
+              >
+              </q-avatar>
 
               <!-- Kui on pilt siis näitame -->
               <q-avatar v-else size="130px" class="q-ma-xs">
@@ -64,8 +43,34 @@
                 >
                 </q-img>
               </q-avatar>
+              <!-- Uue pildi valik ja vana kustutamine -->
+              <q-menu :offset="[40, 10]" auto-close>
+                <q-item clickable v-ripple @click="valiPilt">
+                  <q-item-section style="font-size: 1.1rem">
+                    {{ uuePildiText }}
+                  </q-item-section>
+                  <q-item-section avatar>
+                    <q-icon :name="symOutlinedAddAPhoto" />
+                  </q-item-section>
+                </q-item>
+                <q-separator />
+                <q-item
+                  clickable
+                  v-ripple
+                  @click="kustutaPilt"
+                  v-if="kasOnPilt"
+                >
+                  <q-item-section style="font-size: 1.1rem"
+                    >Kustutame pildi</q-item-section
+                  >
+                  <q-item-section avatar>
+                    <q-icon color="negative" :name="symOutlinedNoPhotography" />
+                  </q-item-section>
+                </q-item>
+              </q-menu>
             </q-btn>
           </div>
+          <!-- Kasutaja nimi -->
           <div class="row justify-center">
             <div class="text-h4 q-py-md">
               {{ kasutaja?.pnimi }} {{ kasutaja?.enimi }}
@@ -126,7 +131,7 @@
 import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
 
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
 import { symOutlinedAddAPhoto } from '@quasar/extras/material-symbols-outlined';
 import { symOutlinedNoPhotography } from '@quasar/extras/material-symbols-outlined';
@@ -157,6 +162,15 @@ const pealkirjaVärv = 'positive';
 const model = ref(asukModel);
 
 const logout = () => auth.logout();
+
+// Lihtsam valik pildi puhul
+const kasOnPilt = computed(() => {
+  return kasutaja.value.pilt ? true : false;
+});
+// Uue pildi valiku text:
+const uuePildiText = computed(() => {
+  return kasutaja.value.pilt ? 'Uus pilt' : 'Lisame pildi';
+});
 
 /* -------------------------- Kui muudame asukohta -------------------------- */
 function updateAsukoht(value: Valikud) {

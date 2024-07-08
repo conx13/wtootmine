@@ -1,7 +1,7 @@
 {
   "name": "wtootmine",
   "version": "0.0.1",
-  "description": "wTootmine",
+  "description": "Tootmise jälgimise äpp",
   "productName": "WTootmine",
   "author": "conx13 <hillar@gmail.com>",
   "private": true,
@@ -31,17 +31,18 @@
     "eslint-plugin-vue": "^9.0.0",
     "prettier": "^2.5.1",
     "typescript": "^4.5.4",
-    "workbox-build": "^6.5.0",
-    "workbox-cacheable-response": "^6.5.0",
-    "workbox-core": "^6.5.0",
-    "workbox-expiration": "^6.5.0",
-    "workbox-precaching": "^6.5.0",
-    "workbox-routing": "^6.5.0",
-    "workbox-strategies": "^6.5.0"
+    "workbox-build": "^7.0.0",
+    "workbox-cacheable-response": "^7.0.0",
+    "workbox-core": "^7.0.0",
+    "workbox-expiration": "^7.0.0",
+    "workbox-precaching": "^7.0.0",
+    "workbox-routing": "^7.0.0",
+    "workbox-strategies": "^7.0.0"
   },
   "engines": {
     "node": "^20 || ^18 || ^16 || ^14.19",
     "npm": ">= 6.13.4",
     "yarn": ">= 1.21.1"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

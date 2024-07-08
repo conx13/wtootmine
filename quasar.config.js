@@ -170,7 +170,7 @@ module.exports = configure(function (/* ctx */) {
       injectPwaMetaTags: true,
       swFilename: 'sw.js',
       manifestFilename: 'manifest.json',
-      useCredentialsForManifestTag: true,
+      useCredentialsForManifestTag: false,
       // useFilenameHashes: true,
       //extendGenerateSWOptions (cfg) {}
       // extendInjectManifestOptions (cfg) {},

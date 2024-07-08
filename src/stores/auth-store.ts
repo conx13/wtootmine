@@ -43,7 +43,7 @@ export const useAuthStore = defineStore('auth', {
           return true;
         })
         .catch(() => {
-          console.log('ei ole sisse logitud');
+          console.error('ei ole sisse logitud');
           return false;
         });
       return tulem;

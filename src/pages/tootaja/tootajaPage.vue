@@ -1,28 +1,76 @@
 <template>
   <q-page padding>
     <pealkiri :pealkiri="`*${tootaja?.IKOOD}*`" klass="myribakood text-black" />
-    <div class="absolute-center" v-show="loading">
+    <!-- Kui laeme lehte -->
+    <div class="absolute-center" v-if="loading">
       <q-spinner color="primary" size="3em" />
     </div>
-    <div v-show="!loading">
+    <!-- Kui leht on laetud -->
+    <div v-else>
+      <!-- pildi üleslaadimise väli, peidetud -->
+      <input
+        type="file"
+        accept=".jpg, .png, .jpeg, | image/*"
+        name="pilt"
+        id="myFile"
+        @change="kuiTekkisPilt"
+        style="display: none"
+      />
       <div class="row justify-center">
         <div class="col-xs-12 col-lg-3">
           <div class="row justify-center">
             <q-btn outline round no-caps class="shadow-5" color="grey-1">
+              <!-- Kui laeme serverist pilti -->
+              <q-avatar v-if="piltLoading" size="130px">
+                <q-spinner-hourglass color="secondary" />
+              </q-avatar>
+              <!-- Kui ei ole pilti -->
               <q-avatar
-                v-if="!tootaja?.pilt"
+                v-else-if="!kasOnPilt"
                 size="130px"
                 text-color="grey-5"
                 icon="person"
                 class="q-ma-xs"
-              />
-              <q-avatar v-if="tootaja?.pilt" size="130px" class="q-ma-xs">
+              >
+              </q-avatar>
+              <!-- Kui on pilt -->
+              <q-avatar v-else size="130px" class="q-ma-xs">
                 <q-img
                   ratio="1"
+                  loading="lazy"
                   :src="`/api/pics/${tootaja.pilt}`"
                   spinner-color="white"
-                ></q-img>
+                />
               </q-avatar>
+              <!-- Uue pildi valik või vana kustutamine -->
+              <q-menu
+                :offset="[40, 10]"
+                auto-close
+                v-if="user?.roll === 'admin'"
+              >
+                <q-item clickable v-ripple @click="valiPilt">
+                  <q-item-section style="font-size: 1.1rem">
+                    {{ uuePildiText }}
+                  </q-item-section>
+                  <q-item-section avatar>
+                    <q-icon :name="symOutlinedAddAPhoto" />
+                  </q-item-section>
+                </q-item>
+                <q-separator />
+                <q-item
+                  clickable
+                  v-ripple
+                  @click="kustutaPilt"
+                  v-if="kasOnPilt"
+                >
+                  <q-item-section style="font-size: 1.1rem"
+                    >Kustutame pildi</q-item-section
+                  >
+                  <q-item-section avatar>
+                    <q-icon color="negative" :name="symOutlinedNoPhotography" />
+                  </q-item-section>
+                </q-item>
+              </q-menu>
             </q-btn>
           </div>
           <div class="row justify-center">
@@ -63,17 +111,32 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+
+import { symOutlinedAddAPhoto } from '@quasar/extras/material-symbols-outlined';
+import { symOutlinedNoPhotography } from '@quasar/extras/material-symbols-outlined';
 
 import pealkiri from 'src/components/yld/headerComp.vue';
 import { useTootajaStore } from 'src/stores/tootmine/tootaja-store';
+import { useAuthStore } from '../../stores/auth-store';
 import rida from '../../components/tootaja/ridaComp.vue';
 
+const auth = useAuthStore();
 const route = useRoute();
 const router = useRouter();
 const tootajaStore = useTootajaStore();
-const { tootaja, loading } = storeToRefs(tootajaStore);
+const { tootaja, loading, piltLoading } = storeToRefs(tootajaStore);
+const { user } = storeToRefs(auth);
 const txtVarv = ref(false);
+
+// Lihtsam valik pildi puhul
+const kasOnPilt = computed(() => {
+  return tootaja.value.pilt ? true : false;
+});
+// Uue pildi valiku text:
+const uuePildiText = computed(() => {
+  return tootaja.value.pilt ? 'Uus pilt' : 'Lisame pildi';
+});
 
 /* ---------- Abivalem, mis kontrollib ka object on tyhi või mitte ---------- */
 function isEmptyObject(obj: object): boolean {
@@ -95,6 +158,20 @@ function viimatiAktiivne(va: number | null) {
   txtVarv.value = true;
   return `Töötaja oli aktiivne ${va} päeva tagasi.`;
 }
+// Tekitame peidetud pildile kliki
+const valiPilt = () => {
+  document.getElementById('myFile')?.click();
+};
+// Kui tekkis pilt siis laeme serverisse
+const kuiTekkisPilt = (e: Event) => {
+  const data = (<HTMLInputElement>e.target)?.files?.[0];
+  if (data) {
+    tootajaStore.muudaPilt(data);
+  }
+};
+// Kustutame pildi
+const kustutaPilt = () => tootajaStore.kustutaPilt(tootaja.value.pilt);
+
 /* --------------------- //Kui laeme akna, siis täidame --------------------- */
 onMounted(() => {
   //Kontrollime kas juba on andmed stores olemas või andmed on tulemas

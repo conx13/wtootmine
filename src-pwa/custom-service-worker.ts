@@ -4,7 +4,8 @@
  * quasar.config.js > pwa > workboxMode is set to "injectManifest"
  */
 
-declare const self: ServiceWorkerGlobalScope & typeof globalThis;
+declare const self: ServiceWorkerGlobalScope &
+  typeof globalThis & { skipWaiting: () => void };
 
 import { clientsClaim } from 'workbox-core';
 import {
@@ -32,9 +33,3 @@ if (process.env.MODE !== 'ssr' || process.env.PROD) {
     )
   );
 }
-
-// Caching strategies
-/* registerRoute(
-  ({ url }) => url.href.startsWith('https'),
-  new StaleWhileRevalidate({cacheName: 'MY-CACHE',})
-); */

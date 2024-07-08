@@ -11,8 +11,6 @@ async function regAuth(
   next: NavigationGuardNext
 ) {
   const auth = useAuthStore();
-  console.log(from, 'regAuth');
-
   if (await auth.authStatus()) {
     next();
   } else {
