@@ -47,7 +47,9 @@
         </div>
         <div class="col-3">
           <q-toggle
+            v-if="kasutajaRoll === 'admin'"
             v-model="kasAktiivsed"
+            @update:model-value="otsi"
             false-value="0"
             true-value="1"
             label="Akt."
@@ -80,6 +82,7 @@ import userItem from 'src/components/yld/userItem.vue';
 import { useTootajadStore } from 'src/stores/tootajad/tootajad_store';
 import { useTootajaStore } from 'src/stores/tootmine/tootaja-store';
 import { storeToRefs } from 'pinia';
+import { useQuasar } from 'quasar';
 
 const router = useRouter();
 const tootajadStore = useTootajadStore();
@@ -89,13 +92,24 @@ const { otsiText, kasAktiivsed, tootajad, loadingOtsi } =
 //kasutame input fookuse jaoks
 const select_input = ref();
 
+//kasutame kasutaja rolli väärtuseks
+const kasutajaRoll = ref('');
+
+const $q = useQuasar();
+
 /* -------------------- teeme otsingu järgi päringu baasi ------------------- */
-function otsi() {
+const otsi = async () => {
   // võtame otsingult fookuse ära
   select_input.value.blur();
   //otsime baasist töötajaid
-  tootajadStore.getTootajad();
-}
+  if (otsiText.value.trim() !== '') {
+    await tootajadStore.getTootajad();
+    if (tootajad.value.length === 0) {
+      eiLeidnudTeade();
+    }
+  }
+  console.log(tootajad.value.length);
+};
 
 /* ------------------------- Näitame töötaja kaarti ------------------------- */
 function tootajaBaasist(tid: number) {
@@ -111,9 +125,20 @@ const fookus = () =>
     select_input.value.focus();
   }, 0);
 
+/*-----Kui ei leia kedaigi baasist, näitame teadet------ */
+const eiLeidnudTeade = () => {
+  $q.notify({
+    message: 'Kahjuks ei leidnud kedagi!',
+    type: 'negative',
+    position: 'center',
+    timeout: 1000,
+  });
+};
+
 /* ---------------------------------- Start --------------------------------- */
 onMounted(() => {
   fookus();
+  kasutajaRoll.value = localStorage.getItem('roll') || '';
 });
 </script>
 <style>

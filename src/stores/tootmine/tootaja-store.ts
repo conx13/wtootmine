@@ -176,20 +176,20 @@ function oigeAeg(ajad: TootajaAjad): Date {
   const hetk = new Date(Date.now());
   hetk.setSeconds(0); //nullime sekundid
 
-  const hetkText = date.formatDate(hetk, 'HH:mm');
+  const hetkAeg = date.formatDate(hetk, 'HH:mm');
   const [lounAlgustunnid, lounaAlgusminutid] = ajad.Lalgus.split(':');
   const [tooAlgusTunnid, tooAlgusMinutid] = ajad.Tooalgus.split(':');
   const [tooLoppTunnid, tooLoppMinutid] = ajad.Toolopp.split(':');
 
-  if (hetkText > ajad.Lalgus && hetkText < ajad.Llopp) {
+  if (hetkAeg > ajad.Lalgus && hetkAeg < ajad.Llopp) {
     //kui aeg jääb lõuna sisse, siis paneme lõuna alguse aja
     hetk.setHours(Number(lounAlgustunnid));
     hetk.setMinutes(Number(lounaAlgusminutid));
-  } else if (hetkText < ajad.Tooalgus) {
+  } else if (hetkAeg < ajad.Tooalgus) {
     //kontrollime et aeg jääks tööpäeva algusesse
     hetk.setHours(Number(tooAlgusTunnid));
     hetk.setMinutes(Number(tooAlgusMinutid));
-  } else if (hetkText > ajad.Toolopp) {
+  } else if (hetkAeg > ajad.Toolopp) {
     //kontrollime et aeg jääk tööpäeva lõppu
     hetk.setHours(parseInt(tooLoppTunnid));
     hetk.setMinutes(parseInt(tooLoppMinutid));
@@ -203,16 +203,10 @@ function oigeAeg(ajad: TootajaAjad): Date {
  * @param ajad  - töötaja ajad baasist
  * @param stop  - hetkeaeg
  */
-function tehtudAeg(start: string, ajad: TootajaAjad, stop: Date) {
+function tehtudAeg(start: string, ajad: TootajaAjad, stop: Date): number {
   const tooStart = new Date(start);
-  const tooAlgusTunnid = tooStart.getHours();
-  const tooAlgusMinutid = tooStart.getMinutes();
-  const tooAlgusMinutites = tooAlgusTunnid * 60 + tooAlgusMinutid;
-
-  const tooLoppTunnid = stop.getHours();
-  const tooLoppMinutid = stop.getMinutes();
-  const tooLoppMinutites = tooLoppTunnid * 60 + tooLoppMinutid;
-
+  const tooAlgusMinutites = tooStart.getHours() * 60 + tooStart.getMinutes();
+  const tooLoppMinutites = stop.getHours() * 60 + stop.getMinutes();
   const lounaLoppMinutites = convertTimeToMinutes(ajad.Llopp);
   const tooAegKokku = Math.floor((stop.getTime() - tooStart.getTime()) / 60000);
 
@@ -220,9 +214,9 @@ function tehtudAeg(start: string, ajad: TootajaAjad, stop: Date) {
     tooAlgusMinutites < lounaLoppMinutites &&
     tooLoppMinutites >= lounaLoppMinutites
   ) {
-    // kui tööaja sisse jääb lõuna siis võtame 30mintsa maha
     return tooAegKokku - 30;
   }
+
   return tooAegKokku;
 }
 

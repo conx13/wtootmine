@@ -4,19 +4,9 @@
     <!-- @right="onRight" -->
     <q-slide-item class="" right-color="warning" :reset="test" @right="onRight">
       <!-- style="border-radius: 20px" -->
-      <template v-slot:right>
-        <div class="row full-width tems-center">
-          <div class="">
-            Töö ootel<q-icon size="xl" right name="pause_circle" />
-          </div>
-        </div>
+      <template v-slot:right v-if="onAdmin">
+        <div>Töö ootel<q-icon size="xl" right name="pause_circle" /></div>
       </template>
-      <!--       style="
-          border-radius: 20px;
-          border-color: lightblue;
-          border-style: solid;
-          border-width: 1px;
-        " -->
       <q-item
         clickable
         v-ripple
@@ -25,6 +15,7 @@
             ? `bg-yellow-1 q-pr-xs`
             : `bg-white q-pr-xs`,
         ]"
+        v-touch-hold.mouse="vajutasPikalt"
         @click="tootajaBaasist(tootajaGrupp.TID)"
       >
         <!-- :to="{ name: 'tootajaPage', params: { id: tootajaGrupp.TID } }" -->
@@ -78,26 +69,28 @@ import { useTootajaStore } from 'src/stores/tootmine/tootaja-store';
 import { useRouter } from 'vue-router';
 import { PropType, ref } from 'vue';
 
+const emit = defineEmits(['refresh', 'tooOotele']);
 const router = useRouter();
+
 const tootajaStore = useTootajaStore();
-const test = ref(false);
 const props = defineProps({
+  onAdmin: { type: Boolean, required: true },
   viimatiVaatasid: { type: Number, required: true },
   tootajaGrupp: {
     type: Object as PropType<gruppTootajad>,
     required: true,
   },
 });
-const emit = defineEmits(['refresh']);
-//defineProps<{ tootajaGrupp: gruppTootajad; viimatiVaatasid: number }>();
+
+const test = ref(false);
 
 // kui lükkame paremalt vasakule
 async function onRight({ reset }: { reset: () => void }) {
-  /*   await tootajaStore.muudameLisameTootajaAega(
+  await tootajaStore.muudameLisameTootajaAega(
     props.tootajaGrupp.TID,
     props.tootajaGrupp.RID,
     props.tootajaGrupp.START
-  ); */
+  );
   emit('refresh');
   return reset();
 }
@@ -111,4 +104,11 @@ function tootajaBaasist(tid: number) {
     });
   }, 150);
 }
+// vajutas pikalt ja muudame tööd
+const vajutasPikalt = () => {
+  emit('tooOotele', {
+    tid: props.tootajaGrupp.TID,
+    start: props.tootajaGrupp.START,
+  });
+};
 </script>

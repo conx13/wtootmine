@@ -43,10 +43,12 @@
           <q-tab-panel name="tootajad" class="no-padding">
             <tootmine-grupp-card
               @refresh="refresh"
+              @too-ootele="avaMuudameTood"
               v-for="item in gruppTootajad"
               :key="item.TID"
               :tootaja-grupp="item"
               :viimati-vaatasid="viimatiVaatasid"
+              :onAdmin="onAdmin"
             />
             <!-- </div> -->
           </q-tab-panel>
@@ -66,6 +68,34 @@
       </div>
     </div>
   </q-page>
+  <q-dialog v-model="dialogMuudameTood" persistent>
+    <q-card>
+      <q-card-section>
+        <div class="text-h6">
+          Muudame hetke töö "Ootan tööd" tööks ja selle alguse aeg oleks:
+        </div>
+      </q-card-section>
+      <q-card-section class="q-pt-none">
+        <q-time
+          :options="miinimumTund"
+          format24h
+          mask="YYYY-MM-DD HH:mm:ss"
+          v-model="algusAeg"
+        />
+      </q-card-section>
+
+      <q-card-actions align="center">
+        <q-btn flat label="Cancel" color="secondary" v-close-popup />
+        <q-btn
+          flat
+          label="Muudame"
+          color="primary"
+          v-close-popup
+          @click="muudameTood"
+        />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script setup lang="ts">
@@ -83,6 +113,9 @@ const tootStore = useTootmineStore();
 const { loading, gruppTootajad, gruppTood, viimatiVaatasid } =
   storeToRefs(tootStore);
 const tab = ref('tootajad');
+const onAdmin = ref(false);
+const dialogMuudameTood = ref(false);
+const algusAeg = ref();
 
 onMounted(() => {
   //Vaatame ajaloost, milline tab oli aktiivne
@@ -92,6 +125,9 @@ onMounted(() => {
   //juhul kui grupp on stores olemas, siis rohkem ei küsi
   if (!gruppTootajad.value.length && !loading.value) {
     tootStore.getGrupp(String(route.params.grupp));
+  }
+  if (localStorage.getItem('roll') === 'admin') {
+    onAdmin.value = true;
   }
 });
 
@@ -104,4 +140,18 @@ function refresh() {
 function aktiivneSakk() {
   sessionStorage.setItem(String(route.params.grupp), tab.value);
 }
+
+const avaMuudameTood = (tulem: { tid: number; start: string }) => {
+  algusAeg.value = tulem.start;
+  dialogMuudameTood.value = true;
+};
+
+const muudameTood = () => {
+  console.log('Muudetud aeg', algusAeg.value);
+};
+
+const miinimumTund = (hr: number) => {
+  const aeg = new Date(algusAeg.value);
+  return hr >= aeg.getHours();
+};
 </script>
