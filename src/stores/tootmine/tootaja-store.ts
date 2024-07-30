@@ -5,6 +5,7 @@ import { date } from 'quasar';
 
 interface Vastus {
   start: string;
+  rid: number;
 }
 export const useTootajaStore = defineStore('tootaja', {
   state: () => ({
@@ -40,14 +41,18 @@ export const useTootajaStore = defineStore('tootaja', {
       const tana = Date.now();
       try {
         const data = await axios.get<Vastus>(`/api/users/viimatiakt/${tid}`);
-        if (data.data !== undefined) {
-          const viimati = new Date(data.data.start);
-          // võrdleme viimast akt aega ja tänast
-          const diff = date.getDateDiff(tana, viimati, 'days');
-          this.tootaja.viimatiAkt = diff;
-        }
+        this.tootaja.rid = data.data.rid;
+        const viimatiAeg = new Date(data.data.start);
+        //muudame tunnid aja tsooniga õigeks
+        viimatiAeg.setUTCHours(
+          viimatiAeg.getUTCHours() + viimatiAeg.getTimezoneOffset() / 60
+        );
+        //lisame töötajale start väärtuse
+        this.tootaja.start = date.formatDate(viimatiAeg, 'YYYY-MM-DD HH:mm:ss');
+        // võrdleme viimast akt aega ja tänast
+        this.tootaja.viimatiAkt = date.getDateDiff(tana, viimatiAeg, 'days');
       } catch (error) {
-        console.error(error);
+        console.error(error, 'getViimatiAkt ERROR!');
       }
     },
     /* -------------------------- Muudame töötaja pilti ------------------------- */
@@ -66,7 +71,7 @@ export const useTootajaStore = defineStore('tootaja', {
         });
         await this.getTootaja(this.tootaja.TID);
       } catch (error) {
-        console.error(error);
+        console.error(error, 'MuudaPilt error');
       } finally {
         this.piltLoading = false;
       }
@@ -85,7 +90,7 @@ export const useTootajaStore = defineStore('tootaja', {
           });
           this.tootaja.pilt = '';
         } catch (err) {
-          console.log(err);
+          console.log(err, 'KustutaPilt error');
         } finally {
           this.piltLoading = false;
         }
@@ -96,17 +101,26 @@ export const useTootajaStore = defineStore('tootaja', {
     /*
     @tid -töötaja ID
     @rid - hekte töö id
-    @start - hetke aeg
+    @start - hetke aktiivse töö alguse aeg
+    @uusAeg - uus tööalguse aeg
     */
-    async muudameLisameTootajaAega(tid: number, rid: number, start: string) {
+    async muudaLisaTootajaAega(
+      tid: number,
+      rid: number,
+      start: string,
+      uusAeg: Date
+    ) {
       try {
         await this.getTootajaAjad(tid); //Võtame baasist töötaja ajad
-        const hetkeOigeAeg = oigeAeg(this.tootjaAjad[0]); //Töötaja aegadega võrreldud aeg
-        const baasiAeg = date.formatDate(hetkeOigeAeg, 'YYYY-MM-DD HH:mm'); //mssql õige formaadis aeg
-        const kokkuTooaeg = tehtudAeg(start, this.tootjaAjad[0], hetkeOigeAeg); //arvutame tööaja kokku
-        await this.putTooajaLopp(rid, baasiAeg, kokkuTooaeg);
+        const hetkeOigeAeg = oigeAeg(this.tootjaAjad[0], uusAeg); //Töötaja aegadega võrreldud aeg
+        //mssql õige formaadis aeg
+        const loppAeg = date.formatDate(hetkeOigeAeg, 'YYYY-MM-DD HH:mm');
+        //arvutame tööaja kokku
+        const kokkuTooaeg = tehtudAeg(start, this.tootjaAjad[0], hetkeOigeAeg);
+
+        await this.putTooajaLopp(rid, loppAeg, kokkuTooaeg);
         //TODO vaja tööootel kood võtta config failist
-        await this.postUusToo(tid, 47838, baasiAeg);
+        await this.postUusToo(tid, 47838, loppAeg);
       } catch (error) {
         console.error(error);
       }
@@ -172,8 +186,8 @@ export const useTootajaStore = defineStore('tootaja', {
 /**
  * @param ajad - Baasist töötaja ajad
  */
-function oigeAeg(ajad: TootajaAjad): Date {
-  const hetk = new Date(Date.now());
+function oigeAeg(ajad: TootajaAjad, uusAeg: Date): Date {
+  const hetk = new Date(uusAeg);
   hetk.setSeconds(0); //nullime sekundid
 
   const hetkAeg = date.formatDate(hetk, 'HH:mm');
@@ -194,6 +208,8 @@ function oigeAeg(ajad: TootajaAjad): Date {
     hetk.setHours(parseInt(tooLoppTunnid));
     hetk.setMinutes(parseInt(tooLoppMinutid));
   }
+  console.log(hetk, 'Hetk');
+
   return hetk;
 }
 

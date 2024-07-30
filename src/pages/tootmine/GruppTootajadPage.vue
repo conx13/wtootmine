@@ -43,12 +43,11 @@
           <q-tab-panel name="tootajad" class="no-padding">
             <tootmine-grupp-card
               @refresh="refresh"
-              @too-ootele="avaMuudameTood"
+              @tid="tootajaBaasist"
               v-for="item in gruppTootajad"
               :key="item.TID"
               :tootaja-grupp="item"
               :viimati-vaatasid="viimatiVaatasid"
-              :onAdmin="onAdmin"
             />
             <!-- </div> -->
           </q-tab-panel>
@@ -68,54 +67,27 @@
       </div>
     </div>
   </q-page>
-  <q-dialog v-model="dialogMuudameTood" persistent>
-    <q-card>
-      <q-card-section>
-        <div class="text-h6">
-          Muudame hetke töö "Ootan tööd" tööks ja selle alguse aeg oleks:
-        </div>
-      </q-card-section>
-      <q-card-section class="q-pt-none">
-        <q-time
-          :options="miinimumTund"
-          format24h
-          mask="YYYY-MM-DD HH:mm:ss"
-          v-model="algusAeg"
-        />
-      </q-card-section>
-
-      <q-card-actions align="center">
-        <q-btn flat label="Cancel" color="secondary" v-close-popup />
-        <q-btn
-          flat
-          label="Muudame"
-          color="primary"
-          v-close-popup
-          @click="muudameTood"
-        />
-      </q-card-actions>
-    </q-card>
-  </q-dialog>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 
 import { useTootmineStore } from '../../stores/tootmine/tootmine-store';
+import { useTootajaStore } from 'src/stores/tootmine/tootaja-store';
 import TootmineGruppCard from '../../components/tootmine/TootmineGruppCard.vue';
 import tooTegijadCard from '../../components/tootmine/tooTegijadCard.vue';
 
 const route = useRoute();
+const router = useRouter();
 
 const tootStore = useTootmineStore();
+const tootajaStore = useTootajaStore();
+
 const { loading, gruppTootajad, gruppTood, viimatiVaatasid } =
   storeToRefs(tootStore);
 const tab = ref('tootajad');
-const onAdmin = ref(false);
-const dialogMuudameTood = ref(false);
-const algusAeg = ref();
 
 onMounted(() => {
   //Vaatame ajaloost, milline tab oli aktiivne
@@ -125,9 +97,6 @@ onMounted(() => {
   //juhul kui grupp on stores olemas, siis rohkem ei küsi
   if (!gruppTootajad.value.length && !loading.value) {
     tootStore.getGrupp(String(route.params.grupp));
-  }
-  if (localStorage.getItem('roll') === 'admin') {
-    onAdmin.value = true;
   }
 });
 
@@ -141,17 +110,14 @@ function aktiivneSakk() {
   sessionStorage.setItem(String(route.params.grupp), tab.value);
 }
 
-const avaMuudameTood = (tulem: { tid: number; start: string }) => {
-  algusAeg.value = tulem.start;
-  dialogMuudameTood.value = true;
-};
-
-const muudameTood = () => {
-  console.log('Muudetud aeg', algusAeg.value);
-};
-
-const miinimumTund = (hr: number) => {
-  const aeg = new Date(algusAeg.value);
-  return hr >= aeg.getHours();
-};
+// võtame töötaja baasist ja saadame töötaja lehele
+function tootajaBaasist(tid: number) {
+  tootajaStore.getTootaja(Number(tid));
+  setTimeout(() => {
+    router.push({
+      name: 'tootajaPage',
+      params: { id: tid },
+    });
+  }, 150);
+}
 </script>

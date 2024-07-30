@@ -27,6 +27,7 @@
           color="primary"
           v-for="item in tegijaGrupp"
           :key="item.TID"
+          @click="emitTid(item.TID)"
         >
           <q-avatar v-show="item.pilt">
             <q-img ratio="1" loading="lazy" :src="`/api/pics/${item.pilt}`" />
@@ -51,6 +52,7 @@ import { ref } from 'vue';
 import { date } from 'quasar';
 import { useTootmineStore } from '../../stores/tootmine/tootmine-store';
 import { storeToRefs } from 'pinia';
+const emit = defineEmits<{ (event: 'tid', tid: number): void }>();
 
 const tootStore = useTootmineStore();
 //const { gruppTood, uuedTood, viimatiVaatasid } = storeToRefs(tootStore);
@@ -70,6 +72,10 @@ const tegijaGrupp = ref();
 async function filterToo(jid: number) {
   tegijaGrupp.value = await tootStore.getTooTegijad(jid);
 }
+
+const emitTid = (tid: number) => {
+  emit('tid', tid);
+};
 </script>
 <style lang="sass">
 .text-caption

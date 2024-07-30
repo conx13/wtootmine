@@ -97,14 +97,57 @@
 
           <q-separator inset class="q-my-md" />
           <div
-            class="text-caption text-center text-positive"
-            :class="{ 'text-negative': txtVarv }"
+            v-if="txtVarv"
+            class="text-caption text-center"
+            :class="{
+              'text-positive': !txtVarv,
+              'text-negative': txtVarv,
+            }"
           >
-            {{ viimatiAktiivne(tootaja.viimatiAkt) }}
+            {{ viimatiAktiivne }}
+          </div>
+          <div v-else class="row justify-center">
+            <q-btn
+              color="primary"
+              no-caps
+              outline
+              :icon-right="symOutlinedAutopause"
+              class="col-8"
+              label="Paneme töötaja 'Töö ootele'"
+              @click="avaMuudameTood"
+            />
           </div>
         </div>
       </div>
     </div>
+    <q-dialog v-model="dialogMuudameTood" persistent>
+      <q-card>
+        <q-card-section>
+          <div class="text-h6">
+            Muudame hetke töö "Ootan tööd" tööks ja selle alguse aeg oleks:
+          </div>
+        </q-card-section>
+        <q-card-section class="q-pt-none">
+          <q-time
+            :options="miinimumAeg"
+            format24h
+            mask="YYYY-MM-DD HH:mm:ss"
+            v-model="algusAeg"
+          />
+        </q-card-section>
+
+        <q-card-actions align="center">
+          <q-btn class="col-4" label="Cancel" v-close-popup />
+          <q-btn
+            class="col-4"
+            label="Muudame"
+            color="primary"
+            v-close-popup
+            @click="muudameTood"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -115,6 +158,7 @@ import { computed, onMounted, ref } from 'vue';
 
 import { symOutlinedAddAPhoto } from '@quasar/extras/material-symbols-outlined';
 import { symOutlinedNoPhotography } from '@quasar/extras/material-symbols-outlined';
+import { symOutlinedAutopause } from '@quasar/extras/material-symbols-outlined';
 
 import pealkiri from 'src/components/yld/headerComp.vue';
 import { useTootajaStore } from 'src/stores/tootmine/tootaja-store';
@@ -127,7 +171,15 @@ const router = useRouter();
 const tootajaStore = useTootajaStore();
 const { tootaja, loading, piltLoading } = storeToRefs(tootajaStore);
 const { user } = storeToRefs(auth);
-const txtVarv = ref(false);
+
+const dialogMuudameTood = ref(false);
+const algusAeg = ref();
+
+/* -- Et kui töötaja on olnud täna aktiivne siis ühte värvi ja muidu punane - */
+const txtVarv = computed(() => {
+  const va = tootaja.value.viimatiAkt;
+  return va === 0 ? false : true;
+});
 
 // Lihtsam valik pildi puhul
 const kasOnPilt = computed(() => {
@@ -138,6 +190,17 @@ const uuePildiText = computed(() => {
   return tootaja.value.pilt ? 'Uus pilt' : 'Lisame pildi';
 });
 
+// viimati aktiivne text vastavalt tulemusele
+const viimatiAktiivne = computed(() => {
+  const va = tootaja.value.viimatiAkt;
+  if (va === 0) {
+    return 'Töötaja oli/on täna aktiivne';
+  } else if (va === 1) {
+    return `Töötaja oli aktiivne ${va} päev tagasi.`;
+  }
+  return `Töötaja oli aktiivne ${va} päeva tagasi.`;
+});
+
 /* ---------- Abivalem, mis kontrollib ka object on tyhi või mitte ---------- */
 function isEmptyObject(obj: object): boolean {
   for (const key in obj) {
@@ -146,18 +209,6 @@ function isEmptyObject(obj: object): boolean {
   return true;
 }
 
-/* -- Et kui töötaja on olnud täna aktiivne siis ühte värvi ja muidu punane - */
-function viimatiAktiivne(va: number | null) {
-  if (va === 0) {
-    txtVarv.value = false;
-    return 'Töötaja oli/on täna aktiivne';
-  } else if (va === 1) {
-    txtVarv.value = true;
-    return `Töötaja oli aktiivne ${va} päev tagasi.`;
-  }
-  txtVarv.value = true;
-  return `Töötaja oli aktiivne ${va} päeva tagasi.`;
-}
 // Tekitame peidetud pildile kliki
 const valiPilt = () => {
   document.getElementById('myFile')?.click();
@@ -172,6 +223,44 @@ const kuiTekkisPilt = (e: Event) => {
 // Kustutame pildi
 const kustutaPilt = () => tootajaStore.kustutaPilt(tootaja.value.pilt);
 
+//Avame töö aja muutmise dialoogi
+const avaMuudameTood = () => {
+  algusAeg.value = tootaja.value.start;
+  console.log(algusAeg.value, 'algusAeg');
+
+  dialogMuudameTood.value = true;
+};
+const muudameTood = async () => {
+  await tootajaStore.muudaLisaTootajaAega(
+    tootaja.value.TID,
+    tootaja.value.rid,
+    tootaja.value.start,
+    algusAeg.value
+  );
+};
+
+//ei luba kasutajal varemsema ajaga tööd muuta
+const miinimumAeg = (hr: number, min: number | null) => {
+  const aeg = new Date(tootaja.value.start);
+  const minHour = aeg.getHours(); // Get the minimum hour from the date
+  const minMinute = aeg.getMinutes(); // Get the minimum minute from the date
+
+  // Kui aeg on etteantust suurem
+  if (
+    hr >= minHour &&
+    (hr > minHour || (hr === minHour && (min === null || min >= minMinute)))
+  ) {
+    return true;
+  }
+  //kui aeg on väiksem etteantust
+  return false;
+};
+
+//Liigume tagasi
+function tagasi() {
+  router.go(-1);
+}
+
 /* --------------------- //Kui laeme akna, siis täidame --------------------- */
 onMounted(() => {
   //Kontrollime kas juba on andmed stores olemas või andmed on tulemas
@@ -181,9 +270,4 @@ onMounted(() => {
     tootajaStore.getTootaja(Number(route.params.id));
   }
 });
-
-//Liigume tagasi
-function tagasi() {
-  router.go(-1);
-}
 </script>

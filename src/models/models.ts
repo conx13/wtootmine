@@ -26,6 +26,8 @@ export interface Tootaja {
   Toolopp: string;
   Lalgus: string;
   Llopp: string;
+  start: string;
+  rid: number;
 }
 
 export interface TootajaAjad {
