@@ -92,7 +92,7 @@
               <q-select
                 :options="asukohaValik"
                 :loading="asukohtLoading"
-                :readonly="kasutaja?.roll !== 'admin'"
+                :readonly="kasutaja?.roll === 'kasutaja'"
                 v-model="model"
                 @update:model-value="updateAsukoht"
                 rounded
@@ -107,7 +107,7 @@
 
           <q-separator inset class="q-mb-md" />
           <rida
-            v-if="kasutaja.roll === 'admin'"
+            v-if="kasutaja.roll !== 'kasutaja'"
             rea-tekst="Roll"
             :rea-data="kasutaja?.roll"
           />
@@ -136,7 +136,7 @@ import { computed, onMounted, ref } from 'vue';
 import { symOutlinedAddAPhoto } from '@quasar/extras/material-symbols-outlined';
 import { symOutlinedNoPhotography } from '@quasar/extras/material-symbols-outlined';
 
-import { useKasutajaStore } from 'src/stores/kasutaja/kasutaja-store';
+import { useKasutajaStore } from '../../stores/kasutaja/kasutaja-store';
 import pealkiri from '../../components/yld/headerComp.vue';
 import rida from '../../components/tootaja/ridaComp.vue';
 import { date } from 'quasar';

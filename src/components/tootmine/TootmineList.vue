@@ -12,7 +12,7 @@
       clickable
       v-ripple
       @click="getTegijad(item.GGRUPP)"
-      :to="{ name: 'tootmineGrupp', params: { grupp: item.GGRUPP } }"
+      :to="{ name: 'm_tootmineGrupp', params: { grupp: item.GGRUPP } }"
     >
       <q-item-section avatar class="">
         <q-circular-progress

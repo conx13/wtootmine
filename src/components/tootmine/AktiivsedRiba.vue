@@ -12,7 +12,7 @@
     <div
       v-ripple:positive
       class="col q-pt-sm q-pr-lg"
-      @click="$router.push({ name: 'tootajadPage' })"
+      @click="$router.push({ name: 'm_tootajadPage' })"
     >
       <div class="text-h6 text-right text-grey-7">Aktiivsed:</div>
       <div class="text-right">
@@ -34,7 +34,7 @@
     <div
       class="col q-pt-sm q-pl-lg relative-position"
       v-ripple:negative
-      @click="$router.push({ name: 'puudujadPage' })"
+      @click="$router.push({ name: 'm_puudujadPage' })"
     >
       <div class="text-h6 text-left text-grey-7">Mitteaktiivsed:</div>
       <q-circular-progress

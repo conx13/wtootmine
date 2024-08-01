@@ -14,7 +14,7 @@
               rounded
               no-caps
               padding="none"
-              :to="{ name: 'kasutajaPage', params: { id: user?.id } }"
+              :to="{ name: 'm_kasutajaPage', params: { id: user?.id } }"
             >
               <!-- <div v-if="email" class="row items-center"> -->
 

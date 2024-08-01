@@ -46,8 +46,9 @@
           </q-form>
         </div>
         <div class="col-3">
+          <!-- kui ei ole õigusi siis ei näita -->
           <q-toggle
-            v-if="kasutajaRoll === 'admin'"
+            v-if="!kasKasutaja"
             v-model="kasAktiivsed"
             @update:model-value="otsi"
             false-value="0"
@@ -74,28 +75,33 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import pealkiri from 'src/components/yld/headerComp.vue';
-import userItem from 'src/components/yld/userItem.vue';
+import userItem from '../../components/yld/userItem.vue';
 import { useTootajadStore } from 'src/stores/tootajad/tootajad_store';
 import { useTootajaStore } from 'src/stores/tootmine/tootaja-store';
 import { storeToRefs } from 'pinia';
 import { useQuasar } from 'quasar';
 
 const router = useRouter();
+const $q = useQuasar();
 const tootajadStore = useTootajadStore();
 const tootajaStore = useTootajaStore();
+
 const { otsiText, kasAktiivsed, tootajad, loadingOtsi } =
   storeToRefs(tootajadStore);
+
 //kasutame input fookuse jaoks
 const select_input = ref();
 
 //kasutame kasutaja rolli väärtuseks
-const kasutajaRoll = ref('');
-
-const $q = useQuasar();
+const kasKasutaja = computed(() => {
+  if (localStorage.getItem('roll') === 'kasutaja') {
+    return true;
+  }
+  return false;
+});
 
 /* -------------------- teeme otsingu järgi päringu baasi ------------------- */
 const otsi = async () => {
@@ -108,14 +114,13 @@ const otsi = async () => {
       eiLeidnudTeade();
     }
   }
-  console.log(tootajad.value.length);
 };
 
 /* ------------------------- Näitame töötaja kaarti ------------------------- */
 function tootajaBaasist(tid: number) {
   tootajaStore.getTootaja(Number(tid));
   setTimeout(() => {
-    router.push({ name: 'tootajaPage', params: { id: tid } });
+    router.push({ name: 'm_tootajaPage', params: { id: tid } });
   }, 150);
 }
 
@@ -138,7 +143,6 @@ const eiLeidnudTeade = () => {
 /* ---------------------------------- Start --------------------------------- */
 onMounted(() => {
   fookus();
-  kasutajaRoll.value = localStorage.getItem('roll') || '';
 });
 </script>
 <style>

@@ -6,6 +6,7 @@ import { date } from 'quasar';
 interface Vastus {
   start: string;
   rid: number;
+  jid: number;
 }
 export const useTootajaStore = defineStore('tootaja', {
   state: () => ({
@@ -42,6 +43,8 @@ export const useTootajaStore = defineStore('tootaja', {
       try {
         const data = await axios.get<Vastus>(`/api/users/viimatiakt/${tid}`);
         this.tootaja.rid = data.data.rid;
+        this.tootaja.jid = data.data.jid;
+
         const viimatiAeg = new Date(data.data.start);
         //muudame tunnid aja tsooniga õigeks
         viimatiAeg.setUTCHours(
@@ -108,7 +111,8 @@ export const useTootajaStore = defineStore('tootaja', {
       tid: number,
       rid: number,
       start: string,
-      uusAeg: Date
+      uusAeg: Date,
+      ootanToodId: number
     ) {
       try {
         await this.getTootajaAjad(tid); //Võtame baasist töötaja ajad
@@ -120,9 +124,10 @@ export const useTootajaStore = defineStore('tootaja', {
 
         await this.putTooajaLopp(rid, loppAeg, kokkuTooaeg);
         //TODO vaja tööootel kood võtta config failist
-        await this.postUusToo(tid, 47838, loppAeg);
+        await this.postUusToo(tid, ootanToodId, loppAeg);
       } catch (error) {
-        console.error(error);
+        console.error(error, 'muudaLisaTootajaAega error');
+        throw error;
       }
     },
 
@@ -175,10 +180,22 @@ export const useTootajaStore = defineStore('tootaja', {
           start: start,
         });
       } catch (error) {
-        console.error(error);
         throw error;
       }
     },
+    /* -------------------------------------------------------------------------- */
+    /*                     Võtame config failist töö ootel ID                     */
+    /* -------------------------------------------------------------------------- */
+    /*     async getTooOotelId() {
+      try {
+        const data = await axios.get('/api/auth/config/ootelid');
+        if (data.data && data.data.ootelid) {
+          this.ootanToodId = data.data.ootelid;
+        }
+      } catch (err) {
+        throw err;
+      }
+    }, */
   },
 });
 

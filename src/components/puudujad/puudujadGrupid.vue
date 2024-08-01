@@ -20,7 +20,7 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { usePuudujadStore } from '../../stores/tootmine/puudujad-store';
+import { usePuudujadStore } from 'stores/tootmine/puudujad-store';
 
 const puudujadStore = usePuudujadStore();
 const { puudujadTooGrupid, grupiNimi } = storeToRefs(puudujadStore);

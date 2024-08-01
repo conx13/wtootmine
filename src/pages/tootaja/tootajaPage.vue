@@ -43,11 +43,7 @@
                 />
               </q-avatar>
               <!-- Uue pildi valik või vana kustutamine -->
-              <q-menu
-                :offset="[40, 10]"
-                auto-close
-                v-if="user?.roll === 'admin'"
-              >
+              <q-menu :offset="[40, 10]" auto-close v-if="!kasKasutaja">
                 <q-item clickable v-ripple @click="valiPilt">
                   <q-item-section style="font-size: 1.1rem">
                     {{ uuePildiText }}
@@ -96,26 +92,25 @@
           <rida rea-tekst="Töökoht" :rea-data="tootaja?.asukoht" />
 
           <q-separator inset class="q-my-md" />
-          <div
-            v-if="txtVarv"
-            class="text-caption text-center"
-            :class="{
-              'text-positive': !txtVarv,
-              'text-negative': txtVarv,
-            }"
-          >
-            {{ viimatiAktiivne }}
-          </div>
-          <div v-else class="row justify-center">
-            <q-btn
-              color="primary"
-              no-caps
-              outline
-              :icon-right="symOutlinedAutopause"
-              class="col-8"
-              label="Paneme töötaja 'Töö ootele'"
-              @click="avaMuudameTood"
-            />
+          <div class="row justify-center">
+            <!-- Näitame kui töötaja ei ole aktiivne -->
+            <div v-if="!aktiivneToo" class="text-caption text-negative">
+              {{ viimatiAktiivne }}
+            </div>
+            <!-- Näitame kui saame töötaja töö ootele panna -->
+            <div
+              v-if="aktiivneToo && tootaja?.jid !== ootanToodId && !kasKasutaja"
+            >
+              <q-btn
+                color="primary"
+                no-caps
+                outline
+                :icon-right="symOutlinedAutopause"
+                class="col-8"
+                label="Paneme töötaja 'Töö ootele'"
+                @click="avaMuudameTood"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -155,50 +150,56 @@
 import { useRoute, useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { computed, onMounted, ref } from 'vue';
+import { useQuasar } from 'quasar';
 
 import { symOutlinedAddAPhoto } from '@quasar/extras/material-symbols-outlined';
 import { symOutlinedNoPhotography } from '@quasar/extras/material-symbols-outlined';
 import { symOutlinedAutopause } from '@quasar/extras/material-symbols-outlined';
 
-import pealkiri from 'src/components/yld/headerComp.vue';
-import { useTootajaStore } from 'src/stores/tootmine/tootaja-store';
-import { useAuthStore } from '../../stores/auth-store';
+import pealkiri from '../../components/yld/headerComp.vue';
+import { useTootajaStore } from '../../stores/tootmine/tootaja-store';
 import rida from '../../components/tootaja/ridaComp.vue';
 
-const auth = useAuthStore();
 const route = useRoute();
 const router = useRouter();
+const $q = useQuasar();
 const tootajaStore = useTootajaStore();
 const { tootaja, loading, piltLoading } = storeToRefs(tootajaStore);
-const { user } = storeToRefs(auth);
 
 const dialogMuudameTood = ref(false);
 const algusAeg = ref();
-
-/* -- Et kui töötaja on olnud täna aktiivne siis ühte värvi ja muidu punane - */
-const txtVarv = computed(() => {
-  const va = tootaja.value.viimatiAkt;
-  return va === 0 ? false : true;
+const ootanToodId = computed(() => {
+  return Number(localStorage.getItem('ootanToodId'));
+});
+//kasutame kasutaja rolli väärtuseks
+const kasKasutaja = computed(() => {
+  if (localStorage.getItem('roll') === 'kasutaja') {
+    return true;
+  }
+  return false;
 });
 
-// Lihtsam valik pildi puhul
+/* -- Et kas töötaja on hetkel aktiivne - */
+const aktiivneToo = computed(() => {
+  const va = tootaja.value.viimatiAkt;
+  return va === 0 ? true : false;
+});
+// viimati aktiivne text vastavalt tulemusele
+const viimatiAktiivne = computed(() => {
+  const va = tootaja.value.viimatiAkt;
+  if (va === 1) {
+    return `Töötaja oli aktiivne ${va} päev tagasi.`;
+  }
+  return `Töötaja oli aktiivne ${va} päeva tagasi.`;
+});
+
+// Kas on pilt olemas ja vastav valik siis
 const kasOnPilt = computed(() => {
   return tootaja.value.pilt ? true : false;
 });
 // Uue pildi valiku text:
 const uuePildiText = computed(() => {
   return tootaja.value.pilt ? 'Uus pilt' : 'Lisame pildi';
-});
-
-// viimati aktiivne text vastavalt tulemusele
-const viimatiAktiivne = computed(() => {
-  const va = tootaja.value.viimatiAkt;
-  if (va === 0) {
-    return 'Töötaja oli/on täna aktiivne';
-  } else if (va === 1) {
-    return `Töötaja oli aktiivne ${va} päev tagasi.`;
-  }
-  return `Töötaja oli aktiivne ${va} päeva tagasi.`;
 });
 
 /* ---------- Abivalem, mis kontrollib ka object on tyhi või mitte ---------- */
@@ -230,13 +231,25 @@ const avaMuudameTood = () => {
 
   dialogMuudameTood.value = true;
 };
+
+// Muudame töötaja töö ootele
 const muudameTood = async () => {
-  await tootajaStore.muudaLisaTootajaAega(
-    tootaja.value.TID,
-    tootaja.value.rid,
-    tootaja.value.start,
-    algusAeg.value
-  );
+  //const tooId = 47838;
+  try {
+    await tootajaStore.muudaLisaTootajaAega(
+      tootaja.value.TID,
+      tootaja.value.rid,
+      tootaja.value.start,
+      algusAeg.value,
+      ootanToodId.value
+    );
+    $q.notify({
+      message: 'Töötaja töö muudeti!',
+      type: 'positive',
+      icon: 'check',
+      position: 'top',
+    });
+  } catch (err) {}
 };
 
 //ei luba kasutajal varemsema ajaga tööd muuta
@@ -244,7 +257,6 @@ const miinimumAeg = (hr: number, min: number | null) => {
   const aeg = new Date(tootaja.value.start);
   const minHour = aeg.getHours(); // Get the minimum hour from the date
   const minMinute = aeg.getMinutes(); // Get the minimum minute from the date
-
   // Kui aeg on etteantust suurem
   if (
     hr >= minHour &&
@@ -264,8 +276,6 @@ function tagasi() {
 /* --------------------- //Kui laeme akna, siis täidame --------------------- */
 onMounted(() => {
   //Kontrollime kas juba on andmed stores olemas või andmed on tulemas
-  console.log('töötaja on mounted');
-
   if (isEmptyObject(tootaja.value) && !loading.value) {
     tootajaStore.getTootaja(Number(route.params.id));
   }

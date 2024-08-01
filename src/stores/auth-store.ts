@@ -33,6 +33,11 @@ export const useAuthStore = defineStore('auth', {
           this.logError();
           throw new Error(err);
         });
+      //Võtame config failist töö ootel ID
+      const data = await axios.get('/api/auth/config/ootelid');
+      if (data.data && data.data.ootelid) {
+        localStorage.setItem('ootanToodId', data.data.ootelid);
+      }
     },
 
     //Kontrollime kas kasutaja on ok ikka
@@ -44,7 +49,7 @@ export const useAuthStore = defineStore('auth', {
           return true;
         })
         .catch(() => {
-          console.error('ei ole sisse logitud');
+          console.error();
           return false;
         });
       return tulem;

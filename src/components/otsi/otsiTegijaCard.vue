@@ -44,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { LeitudTegijad } from 'src/models/otsi/otsiModels';
+import { LeitudTegijad } from '../../models/otsi/otsiModels';
 import { PropType } from 'vue';
 defineProps({
   tegijad: { type: Array as PropType<LeitudTegijad[]>, required: true },

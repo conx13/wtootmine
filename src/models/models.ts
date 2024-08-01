@@ -28,6 +28,7 @@ export interface Tootaja {
   Llopp: string;
   start: string;
   rid: number;
+  jid: number;
 }
 
 export interface TootajaAjad {

@@ -93,14 +93,14 @@ import { computed, onMounted, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { symOutlinedBarcodeScanner } from '@quasar/extras/material-symbols-outlined';
 
-import qrcode from 'src/components/otsi/qrReader.vue';
+import qrcode from '../../components/otsi/qrReader.vue';
 
-import { useOtsiStore } from 'src/stores/otsi/otsi-store';
-import otsiLeitudTooCard from 'src/components/otsi/otsiLeitudTooCard.vue';
-import otsiTegijaKpvCard from 'src/components/otsi/otsiTegijaKpvCard.vue';
-import otsiTegijaCard from 'src/components/otsi/otsiTegijaCard.vue';
-import otsiEiLeidnudCard from 'src/components/otsi/otsiEiLeidnudCard.vue';
-import otsiHeader from 'src/components/otsi/otsiHeader.vue';
+import { useOtsiStore } from '../../stores/otsi/otsi-store';
+import otsiLeitudTooCard from '../../components/otsi/otsiLeitudTooCard.vue';
+import otsiTegijaKpvCard from '../../components/otsi/otsiTegijaKpvCard.vue';
+import otsiTegijaCard from '../../components/otsi/otsiTegijaCard.vue';
+import otsiEiLeidnudCard from '../../components/otsi/otsiEiLeidnudCard.vue';
+import otsiHeader from '../../components/otsi/otsiHeader.vue';
 
 const otsiStore = useOtsiStore();
 const {

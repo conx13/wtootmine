@@ -75,7 +75,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 
 import { useTootmineStore } from '../../stores/tootmine/tootmine-store';
-import { useTootajaStore } from 'src/stores/tootmine/tootaja-store';
+import { useTootajaStore } from '../../stores/tootmine/tootaja-store';
 import TootmineGruppCard from '../../components/tootmine/TootmineGruppCard.vue';
 import tooTegijadCard from '../../components/tootmine/tooTegijadCard.vue';
 
@@ -115,7 +115,7 @@ function tootajaBaasist(tid: number) {
   tootajaStore.getTootaja(Number(tid));
   setTimeout(() => {
     router.push({
-      name: 'tootajaPage',
+      name: 'm_tootajaPage',
       params: { id: tid },
     });
   }, 150);

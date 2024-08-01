@@ -49,7 +49,7 @@
 <script setup lang="ts">
 import { symOutlinedSettingsPhotoCamera } from '@quasar/extras/material-symbols-outlined';
 import { PropType } from 'vue';
-import otsiInputRida from 'src/components/otsi/otsiInputRida.vue';
+import otsiInputRida from '../../components/otsi/otsiInputRida.vue';
 
 defineProps({
   foundCameras: { type: Array as PropType<MediaDeviceInfo[]>, required: true },

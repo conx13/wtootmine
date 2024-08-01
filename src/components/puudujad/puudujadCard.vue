@@ -44,7 +44,7 @@ chevron_right"
 
 <script setup lang="ts">
 import { Tootaja } from '../../models/models';
-import { useTootajaStore } from 'src/stores/tootmine/tootaja-store';
+import { useTootajaStore } from '../../stores/tootmine/tootaja-store';
 import { useRouter } from 'vue-router';
 
 const tootajaStore = useTootajaStore();
@@ -54,7 +54,7 @@ defineProps<{ user: Tootaja }>();
 function tootajaBaasist(tid: number) {
   tootajaStore.getTootaja(Number(tid));
   setTimeout(() => {
-    router.push({ name: 'tootajaPage', params: { id: tid } });
+    router.push({ name: 'm_tootajaPage', params: { id: tid } });
   }, 150);
 }
 </script>

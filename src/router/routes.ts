@@ -29,36 +29,36 @@ const routes = [
     children: [
       {
         path: '',
-        name: 'tootminePage',
+        name: 'm_tootminePage',
         component: () => import('pages/tootmine/TootminePage.vue'),
         beforeEnter: [regAuth],
         meta: { title: 'tootmine' },
       },
       {
         path: '/tootmine/:grupp',
-        name: 'tootmineGrupp',
+        name: 'm_tootmineGrupp',
         meta: { title: 'Tööd:' },
         component: () => import('pages/tootmine/GruppTootajadPage.vue'),
         //beforeEnter: [regAuth],
       },
       {
         path: '/tootajad',
-        name: 'tootajadPage',
+        name: 'm_tootajadPage',
         meta: { title: 'töötajad' },
         component: () => import('pages/tootajad/tootajadPage.vue'),
         beforeEnter: [regAuth],
       },
       {
         path: '/otsi',
-        name: 'otsiPage',
+        name: 'm_otsiPage',
         meta: { title: 'Otsi koodi' },
-        component: () => import('src/pages/otsi/OtsiPage.vue'),
+        component: () => import('pages/otsi/OtsiPage.vue'),
         // beforeEnter: [regAuth],
       },
 
       {
         path: '/puudujad',
-        name: 'puudujadPage',
+        name: 'm_puudujadPage',
         meta: { title: 'mitteaktiivsed' },
         beforeEnter: [regAuth],
         // Soovitati väikese api puhul "otse laadiist mitte ette laadimist"
@@ -66,14 +66,14 @@ const routes = [
       },
       {
         path: '/tootaja/:id',
-        name: 'tootajaPage',
+        name: 'm_tootajaPage',
         meta: { title: 'Töötaja:' },
         component: () => import('pages/tootaja/tootajaPage.vue'),
         beforeEnter: [regAuth],
       },
       {
         path: '/kasutaja/:id',
-        name: 'kasutajaPage',
+        name: 'm_kasutajaPage',
         meta: { title: 'Kasutaja:' },
         component: () => import('pages/kasutaja/KasutajaPage.vue'),
         //beforeEnter: [regAuth],

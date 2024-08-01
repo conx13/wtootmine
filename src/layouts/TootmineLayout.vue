@@ -16,19 +16,19 @@
             name="tootmine"
             icon="home"
             label="Tootmine"
-            :to="{ name: 'tootminePage' }"
+            :to="{ name: 'm_tootminePage' }"
           />
           <q-route-tab
             name="person"
             icon="group"
             label="Töötajad"
-            :to="{ name: 'tootajadPage' }"
+            :to="{ name: 'm_tootajadPage' }"
           />
           <q-route-tab
             name="kasutaja"
             :icon="symOutlinedBarcodeScanner"
             label="Otsi koodi"
-            :to="{ name: 'otsiPage' }"
+            :to="{ name: 'm_otsiPage' }"
           />
         </q-tabs>
       </q-footer>

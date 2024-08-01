@@ -48,9 +48,9 @@ import { storeToRefs } from 'pinia';
 import { onActivated, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { usePuudujadStore } from 'src/stores/tootmine/puudujad-store';
-import { useTootajaStore } from 'src/stores/tootmine/tootaja-store';
-import userItem from 'src/components/yld/userItem.vue';
+import { usePuudujadStore } from '../../stores/tootmine/puudujad-store';
+import { useTootajaStore } from '../../stores/tootmine/tootaja-store';
+import userItem from '../../components/yld/userItem.vue';
 import puudujadGrupid from '../../components/puudujad/puudujadGrupid.vue';
 import pealkiri from '../../components/yld/headerComp.vue';
 
@@ -78,7 +78,7 @@ function refresh(done: () => void) {
 //Liigume töötaja kaardile
 function tootajaBaasist(tid: number) {
   setTimeout(() => {
-    router.push({ name: 'tootajaPage', params: { id: tid } });
+    router.push({ name: 'm_tootajaPage', params: { id: tid } });
   }, 150);
   tootajaStore.getTootaja(Number(tid));
 }
